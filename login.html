@@ -1,5 +1,26 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login / Buat Akun | GeoHealth Purworejo</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css"></head><body class="formal-theme">
-<nav class="site-nav"><div class="container-narrow nav-inner"><a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoHealth Purworejo<small>Login dan Akun</small></span></a><div class="nav-links"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a></div></div></nav>
-<main class="container-narrow"><div class="auth-card"><span class="pill">Akses Pengguna</span><h1 style="font-size:2.25rem;margin:14px 0 8px">Masuk atau buat akun.</h1><p style="color:#344054;font-weight:800">Developer dan operator masuk untuk mengelola data. Pengguna umum dapat membuat akun untuk menyimpan akses pada pengembangan lanjutan.</p><div class="auth-tabs"><button type="button" class="auth-tab active" data-auth-tab="login">Login</button><button type="button" class="auth-tab" data-auth-tab="register">Buat Akun</button></div>
-<section class="auth-pane" id="loginPane"><form id="loginForm"><div class="form-group"><label>Email</label><input class="input" type="email" name="email" value="admin@webgis.local" required></div><div class="form-group" style="margin-top:12px"><label>Password</label><input class="input" type="password" name="password" value="admin123" required></div><div id="loginMsg" style="margin-top:14px"></div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Login</button></form><p class="help-text">Akun demo admin: admin@webgis.local / admin123. Akun operator: operator@webgis.local / operator123.</p></section>
-<section class="auth-pane hidden" id="registerPane"><form id="registerForm"><div class="form-group"><label>Nama lengkap</label><input class="input" type="text" name="name" placeholder="Nama pengguna" required></div><div class="form-group" style="margin-top:12px"><label>Email</label><input class="input" type="email" name="email" placeholder="nama@email.com" required></div><div class="form-group" style="margin-top:12px"><label>Password</label><input class="input" type="password" name="password" minlength="6" placeholder="Minimal 6 karakter" required></div><div id="registerMsg" style="margin-top:14px"></div><button class="btn btn-success" style="width:100%;margin-top:16px" type="submit">Buat Akun</button></form><p class="help-text">Akun baru dibuat sebagai public user. Hak kelola data tetap melalui role admin atau operator.</p></section></div></main><script src="assets/js/common.js"></script><script src="assets/js/auth.js"></script></body></html>
+# Import Database GeoHealth Purworejo
+
+Gunakan pgAdmin Query Tool.
+
+1. Buka pgAdmin.
+2. Buat database baru, contoh `webgis_purworejo`.
+3. Klik database tersebut.
+4. Pilih Tools > Query Tool.
+5. Buka file `schema_postgresql.sql`.
+6. Klik Execute/F5.
+7. Refresh bagian Schemas > public > Tables.
+
+File SQL ini sudah memakai `ST_Force2D` pada geometri batas wilayah sehingga tidak memunculkan error `Geometry has Z dimension but column does not`.
+
+Tabel utama:
+
+- `app_users`
+- `fasilitas_kesehatan`
+- `wilayah_administrasi`
+- `activity_logs`
+
+Akun awal:
+
+```text
+admin@webgis.local / admin123
+```

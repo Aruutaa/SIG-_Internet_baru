@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GeoHealth Purworejo | WebGIS Fasilitas Kesehatan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="container-narrow nav-inner">
+      <a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo Purworejo"><span>GeoHealth Purworejo<small>WebGIS Fasilitas Kesehatan</small></span></a>
+      <button class="mobile-toggle" id="mobileToggle">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a class="active" href="index.html">Beranda</a>
+        <a href="map.html">Peta</a>
+        <a href="data.html">Data</a>
+        <a href="laporan.html">Laporan</a>
+        <a href="login.html">Admin</a>
+      </div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login Admin</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container-narrow hero-inner">
+      <div>
+        <span class="kicker">Fullstack WebGIS berbasis PostgreSQL</span>
+        <h1>Peta fasilitas kesehatan yang lebih interaktif dan siap dikelola admin.</h1>
+        <p class="lead">Website ini dirancang ulang sebagai sistem WebGIS fasilitas kesehatan Kabupaten Purworejo. Pengguna umum dapat melihat peta, mencari lokasi, memfilter jenis fasilitas, melihat statistik, dan membuat rute. Admin dapat login untuk mengelola data spasial melalui basis data PostgreSQL/PostGIS.</p>
+        <div class="hero-cta"><a class="btn btn-primary" href="map.html">Eksplor Peta Interaktif</a><a class="btn btn-light" href="laporan.html">Lihat Tahapan SDLC</a></div>
+        <div class="hero-facts">
+          <div class="fact"><strong id="homeTotal">26</strong><span>Data fasilitas</span></div>
+          <div class="fact"><strong>4</strong><span>Jenis layanan</span></div>
+          <div class="fact"><strong>2+</strong><span>Jenis user</span></div>
+        </div>
+      </div>
+      <div class="hero-map-card" aria-label="Mockup peta interaktif">
+        <div class="mock-map">
+          <div class="mock-grid"></div><div class="mock-boundary"></div>
+          <div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div>
+          <div class="mock-panel"><b>Analisis Lokasi Faskes</b><span>Filter layer, popup atribut, buffer radius, rute, dan ringkasan sebaran.</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="fitur">
+    <div class="container-narrow">
+      <div class="section-head"><h2>Fitur utama yang menjawab instruksi tugas</h2><p>Struktur website dibuat seperti platform geospasial modern: ada landing page, peta interaktif, katalog data, halaman admin, serta dokumentasi pengembangan.</p></div>
+      <div class="grid-4">
+        <div class="card"><div class="icon">⌖</div><h3>Peta Interaktif</h3><p>Visualisasi batas wilayah dan titik fasilitas kesehatan dengan basemap, legenda, popup atribut, filter, pencarian, serta zoom otomatis.</p></div>
+        <div class="card"><div class="icon">▣</div><h3>Basis Data Spasial</h3><p>Struktur PostgreSQL/PostGIS disiapkan untuk menyimpan titik fasilitas dan batas wilayah dalam tipe geometri.</p></div>
+        <div class="card"><div class="icon">↗</div><h3>Analisis Ringan</h3><p>Tersedia statistik jumlah data, grafik jenis fasilitas, pencarian fasilitas terdekat, buffer radius, dan ekspor CSV.</p></div>
+        <div class="card"><div class="icon">◉</div><h3>Login Admin</h3><p>Admin masuk melalui halaman login untuk menambah, mengubah, dan menghapus data fasilitas kesehatan.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="container-narrow split">
+      <div>
+        <span class="pill">Alur sistem</span>
+        <h2 style="font-size:2.7rem;letter-spacing:-.05em;line-height:1.05;margin:14px 0">Satu website untuk publik, admin, data, dan laporan.</h2>
+        <div class="feature-list">
+          <div class="feature-row"><span class="check">✓</span><div><b>Pengguna umum</b><p>Melihat informasi, mencari fasilitas, memfilter peta, dan membaca katalog data tanpa login.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Admin</b><p>Login dan mengelola data fasilitas kesehatan melalui form yang terhubung ke PostgreSQL/PostGIS.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Database</b><p>Semua data atribut dan koordinat disimpan dalam tabel spasial sehingga siap dikembangkan menjadi WebGIS penuh.</p></div></div>
+        </div>
+      </div>
+      <div class="preview-panel">
+        <div class="line"><b>Frontend</b><span>HTML, CSS, JavaScript, Leaflet</span></div>
+        <div class="line"><b>Backend</b><span>PHP API</span></div>
+        <div class="line"><b>Database</b><span>PostgreSQL + PostGIS</span></div>
+        <div class="line"><b>Layer spasial</b><span>Faskes titik dan batas Purworejo</span></div>
+        <div class="line"><b>SDLC</b><span>Prototype</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      <div class="section-head"><h2>Pembagian jenis user</h2><p>Minimal dua jenis user dipenuhi melalui pengguna umum dan admin. Role operator juga disiapkan di database agar sistem mudah dikembangkan.</p></div>
+      <div class="grid-3">
+        <div class="card role-card"><span class="pill">Public User</span><h3>Pengunjung</h3><p>Mengakses beranda, peta interaktif, data, filter, rute, statistik, dan ekspor CSV tanpa login.</p></div>
+        <div class="card role-card"><span class="pill">Admin</span><h3>Pengelola Website</h3><p>Login untuk menambah, memperbarui, dan menghapus data fasilitas kesehatan yang tersimpan di PostgreSQL/PostGIS.</p></div>
+        <div class="card role-card"><span class="pill">Operator</span><h3>Pengelola Data Lapangan</h3><p>Role tambahan sudah disiapkan di tabel pengguna untuk kebutuhan pengembangan berikutnya.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section soft">
+    <div class="container-narrow">
+      <div class="cta">
+        <div><h2>Siap diuji sebagai tugas WebGIS.</h2><p>Buka peta untuk melihat interaksi utama atau masuk sebagai admin untuk mencoba pengelolaan data.</p></div>
+        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Login Admin</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoHealth Purworejo</b><br><small>WebGIS fasilitas kesehatan berbasis PostgreSQL/PostGIS.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a><a href="login.html">Admin</a></div></div></footer>
+  <script src="assets/js/common.js"></script>
+</body>
+</html>

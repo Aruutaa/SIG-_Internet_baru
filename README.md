@@ -1,34 +1,29 @@
-# GeoHealth Purworejo - WebGIS Fasilitas Kesehatan
+# GeoHealth Purworejo - Revisi OSM 3D dan Developer Console
 
-Paket ini memakai tampilan Toy Story dari versi sebelumnya dengan isi yang langsung ke fungsi sistem, SDLC, database, user, dan analisis kesehatan.
+Struktur website:
+- `index.html` halaman utama yang lebih formal.
+- `map.html` peta interaktif fasilitas kesehatan dengan OSM 3D Buildings.
+- `data.html` katalog data dan tabel atribut.
+- `login.html` login dan buat akun.
+- `admin.html` Developer Console untuk edit data fasilitas.
+- `laporan.html` penjelasan SDLC, database, user, dan analisis.
 
-## Struktur
-- `index.html` beranda WebGIS
-- `map.html` peta interaktif
-- `data.html` katalog data fasilitas kesehatan
-- `login.html` login admin
-- `admin.html` dashboard pengelolaan data
-- `laporan.html` dokumentasi SDLC, user, database, dan analisis
-- `database/schema_postgresql.sql` skema PostgreSQL/PostGIS
+Revisi utama:
+1. Tampilan web dibuat lebih formal, tidak memakai gaya kalimat promosi berlebihan.
+2. Layer bangunan menggunakan OSM 3D Buildings pada halaman peta.
+3. Halaman admin diubah menjadi Developer Console dengan struktur fullstack: form CRUD, peta koordinat, tabel data, dan ringkasan arsitektur.
+4. Database tetap mendukung atribut fasilitas kesehatan: IGD, jam operasional IGD, dokter, rawat jalan/inap, dan konsultasi penyakit dalam.
+5. Disediakan tabel `osm_3d_building_layer` sebagai cache opsional jika data bangunan OpenStreetMap ingin disimpan ke PostGIS.
 
-## Menjalankan
+Cara menjalankan:
 ```bash
 php -S localhost:8000
 ```
 Buka `http://localhost:8000/index.html`.
 
-## Database
-Import `database/schema_postgresql.sql` melalui pgAdmin Query Tool. Skema sudah memuat tabel kesehatan tambahan: jenis fasilitas, layanan kesehatan, relasi fasilitas-layanan, kunjungan bulanan, atribut BPJS, IGD, rawat inap, ambulans, jumlah dokter, tenaga kesehatan, kapasitas tempat tidur, rating, dan geometri PostGIS.
+Akun demo:
+- Email: `admin@webgis.local`
+- Password: `admin123`
 
-## Akun demo
-Email: `admin@webgis.local`  
-Password: `admin123`
-
-
-## Revisi akhir
-- Layer bangunan hasil digitasi ditambahkan dalam `assets/geojson/bangunan_faskes.geojson` dan `assets/shp/bangunan_digitasi/`.
-- Shapefile siap pakai juga tersedia sebagai `assets/shp/bangunan_digitasi_shp.zip`.
-- Database ditambah tabel `bangunan_digitasi` dan `faskes_ketersediaan`.
-- Halaman login memiliki dua mode: login dan buat akun.
-- Atribut layanan kesehatan ditambah: IGD beserta jam operasional, dokter umum, dokter spesialis, rawat jalan, rawat inap, dan konsultasi dokter penyakit dalam.
-- Warna diperkuat agar kontras pada peta, kartu, tombol, dan panel analisis.
+Import database melalui pgAdmin Query Tool menggunakan:
+`database/schema_postgresql.sql`

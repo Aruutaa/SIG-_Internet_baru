@@ -1,4 +1,4 @@
-let map, markerCluster, boundaryLayer, buildingLayer, facilities = [], buildings = [], activeTypes = new Set();
+let map, markerCluster, boundaryLayer, osm3dLayer, facilities = [], activeTypes = new Set();
 let selectedBuffer = null, routeControl = null, userMarker = null, currentUserLatLng = null, typeChart = null;
 
 function initMap(){
@@ -60,19 +60,40 @@ function renderMarkers(){
   filtered().forEach(f => { if(!validCoord(f)) return; const m = L.marker([f.latitude,f.longitude], {icon:makeToyIcon(f.jenis), title:f.nama}).bindPopup(popupHTML(f)); m.on('click', () => updateAnalysis(`Fasilitas dipilih: ${f.nama}. Informasi yang dicek meliputi IGD, dokter, rawat jalan/inap, dan konsultasi penyakit dalam.`)); markerCluster.addLayer(m); });
   markerCluster.addTo(map);
 }
+
 function renderBuildings(){
-  if(buildingLayer) map.removeLayer(buildingLayer);
-  const enabled = qs('#buildingLayerToggle')?.checked !== false;
-  if(!enabled) return;
-  buildingLayer = L.geoJSON({type:'FeatureCollection',features:buildings},{
-    style:{color:'#001f54',weight:2.5,fillColor:'#FFC400',fillOpacity:.48},
-    onEachFeature:(feature, layer)=>{
-      const p=getProps(feature);
-      layer.bindPopup(`<div class="building-popup"><b>${escapeHTML(p.nama_bangunan || 'Bangunan digitasi')}</b><br>${escapeHTML(p.nama_faskes || '-')}<br><span class="building-chip">${escapeHTML(p.kode_bangunan || '-')}</span><br>Luas: ${escapeHTML(p.luas_m2 || '-')} m² • Lantai: ${escapeHTML(p.jumlah_lantai || '-')}<br>Kecamatan: ${escapeHTML(p.kecamatan || '-')}</div>`);
-      layer.on('mouseover',()=>layer.setStyle({fillOpacity:.72,weight:4})); layer.on('mouseout',()=>layer.setStyle({fillOpacity:.48,weight:2.5}));
+  const toggle = qs('#osm3dLayerToggle');
+  const status = qs('#osm3dStatus');
+  if(!toggle || toggle.checked === false){
+    if(osm3dLayer && typeof osm3dLayer.remove === 'function'){
+      try{osm3dLayer.remove()}catch(e){}
     }
-  }).addTo(map);
-  qs('#buildingCount').textContent = `${buildings.length} poligon`;
+    if(status) status.textContent = 'Layer OSM 3D Buildings dinonaktifkan.';
+    qs('#buildingCount').textContent = 'Nonaktif';
+    return;
+  }
+  if(osm3dLayer){
+    qs('#buildingCount').textContent = 'Aktif';
+    if(status) status.textContent = 'OSM 3D Buildings aktif. Zoom 16 ke atas untuk melihat bentuk bangunan lebih jelas.';
+    return;
+  }
+  if(!window.OSMBuildings){
+    qs('#buildingCount').textContent = 'CDN gagal';
+    if(status) status.textContent = 'Library OSMBuildings belum termuat. Periksa koneksi internet atau CDN.';
+    return;
+  }
+  try{
+    osm3dLayer = new OSMBuildings(map).load('https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json');
+    if(typeof osm3dLayer.setStyle === 'function'){
+      osm3dLayer.setStyle({wallColor:'rgba(11,94,215,0.48)',roofColor:'rgba(246,194,62,0.78)',color:'rgba(220,53,69,0.22)'});
+    }
+    qs('#buildingCount').textContent = 'Aktif';
+    if(status) status.textContent = 'OSM 3D Buildings aktif. Data bangunan dimuat dari OpenStreetMap Buildings.';
+  }catch(e){
+    qs('#buildingCount').textContent = 'Gagal';
+    if(status) status.textContent = 'OSM 3D Buildings gagal dimuat pada browser ini. Peta fasilitas tetap berjalan.';
+    console.warn('OSMBuildings error', e);
+  }
 }
 function renderList(){
   const rows = filtered();
@@ -81,7 +102,7 @@ function renderList(){
 }
 function updateStats(){const rows=filtered(); qs('#statTotal').textContent=formatNum(facilities.length); qs('#statVisible').textContent=formatNum(rows.length); qs('#statKec').textContent=formatNum(new Set(facilities.map(f=>f.kecamatan)).size); updateInsight(rows); updateChart(rows);}
 function updateInsight(rows){const byType=countBy(rows,'jenis'), byKec=countBy(rows,'kecamatan'); const [domType,domCount]=topEntry(byType); const [topK,topCount]=topEntry(byKec); const [lowK,lowCount]=topEntry(byKec,true); qs('#dominantType').textContent=domType==='-'?'—':`${domType} (${domCount})`; qs('#topKec').textContent=topK==='-'?'—':`${topK} (${topCount})`; qs('#lowKec').textContent=lowK==='-'?'—':`${lowK} (${lowCount})`;}
-function updateChart(rows){const counts=countBy(rows,'jenis'); const labels=Object.keys(counts), data=Object.values(counts); if(typeChart) typeChart.destroy(); typeChart=new Chart(qs('#typeChart'),{type:'doughnut',data:{labels,datasets:[{label:'Jumlah',data,backgroundColor:labels.map(getTypeColor),borderColor:'#ffffff',borderWidth:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{family:'Nunito',weight:'800'}}}}}})}
+function updateChart(rows){const counts=countBy(rows,'jenis'); const labels=Object.keys(counts), data=Object.values(counts); if(typeChart) typeChart.destroy(); typeChart=new Chart(qs('#typeChart'),{type:'doughnut',data:{labels,datasets:[{label:'Jumlah',data,backgroundColor:labels.map(getTypeColor),borderColor:'#ffffff',borderWidth:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{family:'Inter',weight:'700'}}}}}})}
 function updateAnalysis(text){qs('#analysisText').textContent=text; qs('#analysisDock').classList.remove('hidden')}
 function renderAll(){renderMarkers(); renderBuildings(); renderList(); updateStats()}
 function distanceMeter(a,b){return map.distance([a.lat,a.lng],[b.lat,b.lng])}
@@ -91,12 +112,13 @@ window.setDestination = function(lat,lng,name){if(!currentUserLatLng){updateAnal
 function locateUser(callback){if(!navigator.geolocation){updateAnalysis('Browser tidak mendukung fitur lokasi.'); return;} navigator.geolocation.getCurrentPosition(pos=>{currentUserLatLng={lat:pos.coords.latitude,lng:pos.coords.longitude}; if(userMarker) map.removeLayer(userMarker); userMarker=L.marker([currentUserLatLng.lat,currentUserLatLng.lng]).addTo(map).bindPopup('Lokasi saya'); map.setView([currentUserLatLng.lat,currentUserLatLng.lng],14); updateAnalysis('Lokasi pengguna berhasil diambil.'); if(callback) callback(currentUserLatLng);},()=>updateAnalysis('Lokasi pengguna tidak dapat diambil.'),{enableHighAccuracy:true,timeout:12000});}
 function nearestFacility(){locateUser(user=>{let rows=filtered().filter(validCoord); let nearest=rows.map(f=>({...f,dist:distanceMeter(user,{lat:f.latitude,lng:f.longitude})})).sort((a,b)=>a.dist-b.dist)[0]; if(nearest){map.setView([nearest.latitude,nearest.longitude],15); updateAnalysis(`Fasilitas terdekat adalah ${nearest.nama}, jenis ${nearest.jenis}, estimasi jarak lurus ${(nearest.dist/1000).toFixed(2)} km. Layanan penting: IGD ${nearest.igd_jam_operasional}, penyakit dalam ${nearest.konsultasi_penyakit_dalam?'tersedia':'belum tersedia'}.`)}})}
 function clearAnalysis(){if(selectedBuffer){map.removeLayer(selectedBuffer); selectedBuffer=null;} if(routeControl){map.removeControl(routeControl); routeControl=null;} qs('#bufferCount').textContent='—'; updateAnalysis('Analisis dihapus. Gunakan filter, klik marker, atau cari fasilitas terdekat.');}
-function addLegend(){const legendControl=L.control({position:'bottomright'}); legendControl.onAdd=function(){const div=L.DomUtil.create('div','legend'); div.innerHTML='<b>Legenda</b><br>'+Object.entries(TYPE_COLOR).filter(([t])=>t!=='Lainnya').map(([t,c])=>`<i style="background:${c}"></i>${t}`).join('<br>')+'<br><span style="border:2px dashed #0057D9;background:#FFC400;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Buffer radius<br><span style="border:2px solid #0057D9;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Batas wilayah<br><span style="border:2px solid #001f54;background:#FFC400;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Bangunan digitasi'; return div;}; legendControl.addTo(map);}
+function addLegend(){const legendControl=L.control({position:'bottomright'}); legendControl.onAdd=function(){const div=L.DomUtil.create('div','legend'); div.innerHTML='<b>Legenda</b><br>'+Object.entries(TYPE_COLOR).filter(([t])=>t!=='Lainnya').map(([t,c])=>`<i style="background:${c}"></i>${t}`).join('<br>')+'<br><span style="border:2px dashed #0057D9;background:#FFC400;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Buffer radius<br><span style="border:2px solid #0057D9;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Batas wilayah<br><span style="border:2px solid #001f54;background:#FFC400;width:14px;height:9px;display:inline-block;margin-right:6px"></span>OSM 3D Buildings'; return div;}; legendControl.addTo(map);}
 async function main(){
-  initMap(); const [facRes,boundRes,bldRes]=await Promise.all([loadFacilities(),loadBoundary(),loadBangunan()]);
-  facilities=facRes.data.features.map(normalizeFeature).filter(validCoord); buildings=bldRes.data.features || [];
-  qs('#statSource').textContent = facRes.source === 'database' ? 'DB' : 'GeoJSON'; qs('#buildingCount').textContent = `${buildings.length} poligon`;
-  qs('#systemNote').textContent = facRes.source === 'database' ? 'Data fasilitas dan bangunan dimuat dari PostgreSQL/PostGIS melalui API PHP.' : 'API database belum aktif. Data fasilitas dan bangunan dimuat dari GeoJSON/SHP fallback.';
+  initMap(); const [facRes,boundRes]=await Promise.all([loadFacilities(),loadBoundary()]);
+  facilities=facRes.data.features.map(normalizeFeature).filter(validCoord);
+  qs('#statSource').textContent = facRes.source === 'database' ? 'DB' : 'GeoJSON';
+  qs('#buildingCount').textContent = 'Aktif';
+  qs('#systemNote').textContent = facRes.source === 'database' ? 'Data fasilitas dimuat dari PostgreSQL/PostGIS melalui API PHP. Layer bangunan menggunakan OSM 3D Buildings.' : 'API database belum aktif. Data fasilitas dimuat dari GeoJSON fallback. Layer bangunan menggunakan OSM 3D Buildings.';
   boundaryLayer=L.geoJSON(boundRes.data,{style:{color:'#0057D9',weight:4,fillColor:'#FFC400',fillOpacity:.16,dashArray:'8 5'}}).addTo(map);
   try{map.fitBounds(boundaryLayer.getBounds(),{padding:[20,20]})}catch(e){}
   renderFilters(); renderAll(); addLegend();
@@ -105,9 +127,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   main().catch(err=>{console.error(err); qs('#systemNote').textContent='Gagal memuat data. Pastikan file dijalankan melalui server lokal.'});
   qs('#togglePanel').addEventListener('click',()=>qs('#mapSidebar').classList.toggle('closed'));
   ['searchText','kecFilter','bpjsFilter','igdFilter','penyakitDalamFilter'].forEach(id=>qs('#'+id)?.addEventListener(id==='searchText'?'input':'change',renderAll));
-  qs('#buildingLayerToggle')?.addEventListener('change',renderBuildings);
+  qs('#osm3dLayerToggle')?.addEventListener('change',renderBuildings);
   qs('#radiusSelect').addEventListener('change',()=>{qs('#radiusBadge').textContent=`${Number(qs('#radiusSelect').value)/1000} km`; updateAnalysis(`Radius buffer diubah menjadi ${Number(qs('#radiusSelect').value)/1000} km.`)});
-  qs('#resetFilter').addEventListener('click',()=>{qs('#searchText').value=''; qs('#kecFilter').value=''; qs('#bpjsFilter').value=''; qs('#igdFilter').value=''; qs('#penyakitDalamFilter').value=''; qs('#buildingLayerToggle').checked=true; activeTypes=new Set([...new Set(facilities.map(f=>f.jenis))]); qsa('#typeFilters input').forEach(i=>i.checked=true); renderAll();});
+  qs('#resetFilter').addEventListener('click',()=>{qs('#searchText').value=''; qs('#kecFilter').value=''; qs('#bpjsFilter').value=''; qs('#igdFilter').value=''; qs('#penyakitDalamFilter').value=''; qs('#osm3dLayerToggle').checked=true; activeTypes=new Set([...new Set(facilities.map(f=>f.jenis))]); qsa('#typeFilters input').forEach(i=>i.checked=true); renderAll();});
   qs('#zoomAll').addEventListener('click',()=>{if(markerCluster&&markerCluster.getLayers().length)map.fitBounds(markerCluster.getBounds(),{padding:[40,40]})});
   qs('#locateMe').addEventListener('click',()=>locateUser()); qs('#nearestBtn').addEventListener('click',nearestFacility); qs('#clearAnalysis').addEventListener('click',clearAnalysis);
   qs('#btnExportCsv').addEventListener('click',()=>download('fasilitas_kesehatan_purworejo.csv',toCSV(filtered().map(f=>({nama_faskes:f.nama,jenis_faskes:f.jenis,kecamatan:f.kecamatan,alamat:f.alamat,latitude:f.latitude,longitude:f.longitude,telepon:f.telepon,jam_layanan:f.jam_layanan,bpjs:f.bpjs,igd_24_jam:f.igd_24_jam,igd_jam_operasional:f.igd_jam_operasional,rawat_jalan:f.rawat_jalan,rawat_inap:f.rawat_inap,ambulans:f.ambulans,kapasitas_tempat_tidur:f.kapasitas_tempat_tidur,jumlah_dokter:f.jumlah_dokter,jumlah_dokter_umum:f.jumlah_dokter_umum,jumlah_dokter_spesialis:f.jumlah_dokter_spesialis,dokter_penyakit_dalam:f.dokter_penyakit_dalam,konsultasi_penyakit_dalam:f.konsultasi_penyakit_dalam,jadwal_penyakit_dalam:f.jadwal_penyakit_dalam,jumlah_tenaga_kesehatan:f.jumlah_tenaga_kesehatan,rating:f.rating,sumber_data:f.sumber_data,catatan:f.catatan}))), 'text/csv'));

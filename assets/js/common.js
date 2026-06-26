@@ -1,7 +1,8 @@
 const API_BASE = 'api';
 const GEOJSON_FALLBACK = 'assets/geojson/faskes.geojson';
 const BOUNDARY_FALLBACK = 'assets/geojson/pwr.geojson';
-const BANGUNAN_FALLBACK = 'assets/geojson/bangunan_faskes.geojson';
+const OSM_BUILDING_FALLBACK = 'assets/geojson/osm_3d_buildings_cache.geojson';
+const BANGUNAN_FALLBACK = OSM_BUILDING_FALLBACK;
 const TYPE_COLOR = {
   'Rumah Sakit':'#E60023',
   'Puskesmas':'#008A2E',
@@ -55,7 +56,7 @@ async function loadBangunan(){
   try{
     const data = await tryJson(`${API_BASE}/bangunan.php`);
     if(data && data.type === 'FeatureCollection') return {data, source:'database'};
-  }catch(e){console.warn('API bangunan tidak aktif, memakai GeoJSON statis.', e.message)}
+  }catch(e){console.warn('API OSM 3D cache tidak aktif, memakai GeoJSON kosong.', e.message)}
   const data = await tryJson(BANGUNAN_FALLBACK, {credentials:'same-origin'});
   return {data, source:'geojson'};
 }

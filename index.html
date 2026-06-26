@@ -6,11 +6,11 @@
   <title>GeoHealth Purworejo | WebGIS Fasilitas Kesehatan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
-  <nav class="site-nav">
+<body class="formal-theme">
+  <nav class="site-nav formal-nav">
     <div class="container-narrow nav-inner">
       <a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo Purworejo"><span>GeoHealth Purworejo<small>WebGIS Fasilitas Kesehatan</small></span></a>
       <button class="mobile-toggle" id="mobileToggle" type="button">☰</button>
@@ -19,32 +19,36 @@
         <a href="map.html">Peta</a>
         <a href="data.html">Data</a>
         <a href="laporan.html">Laporan</a>
-        <a href="login.html">Admin</a>
+        <a href="login.html">Developer</a>
       </div>
-      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login / Daftar</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login / Buat Akun</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
     </div>
   </nav>
 
-  <header class="hero">
-    <div class="container-narrow hero-inner">
-      <div>
-        <span class="kicker">GeoHealth Purworejo • Fullstack WebGIS</span>
-        <h1>Sebaran faskes Purworejo dalam satu <span>peta interaktif</span>.</h1>
-        <p class="lead">Rumah sakit, puskesmas, klinik, apotek, layer bangunan hasil digitasi, dan ketersediaan layanan kesehatan ditampilkan dalam peta interaktif berbasis PostgreSQL/PostGIS.</p>
-        <div class="hero-cta"><a class="btn btn-primary" href="map.html">Eksplor Peta Interaktif</a><a class="btn btn-light" href="laporan.html">Lihat Analisis & SDLC</a></div>
-        <div class="hero-facts">
-          <div class="fact"><strong id="homeTotal">26</strong><span>Data fasilitas</span></div>
-          <div class="fact"><strong>5</strong><span>Jenis fasilitas</span></div>
-          <div class="fact"><strong>14</strong><span>Kecamatan terdata</span></div>
-          <div class="fact"><strong>3</strong><span>Jenis user</span></div>
+  <header class="hero formal-hero">
+    <div class="container-narrow formal-hero-grid">
+      <div class="formal-hero-copy">
+        <span class="kicker">PostgreSQL/PostGIS • Leaflet • OSM 3D Buildings</span>
+        <h1>Sistem Informasi Geografis Fasilitas Kesehatan Kabupaten Purworejo</h1>
+        <p class="lead">Sebaran fasilitas kesehatan, batas administrasi, ketersediaan layanan, rute, radius jangkauan, dan bangunan 3D dari OpenStreetMap disajikan dalam satu platform WebGIS.</p>
+        <div class="hero-cta"><a class="btn btn-primary" href="map.html">Masuk ke Peta</a><a class="btn btn-light" href="data.html">Lihat Katalog Data</a></div>
+        <div class="formal-metric-strip">
+          <div><span>Fasilitas</span><b id="homeTotal">26</b></div>
+          <div><span>Jenis data</span><b>5</b></div>
+          <div><span>Layer spasial</span><b>4</b></div>
+          <div><span>Role pengguna</span><b>3</b></div>
         </div>
       </div>
-      <div class="hero-map-card" aria-label="Mockup peta interaktif WebGIS">
-        <div class="mock-map">
-          <div class="mock-grid"></div><div class="mock-boundary"></div><div class="mock-route"></div>
-          <div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div>
-          <div class="floating-badge">Analisis aktif</div>
-          <div class="mock-panel"><b>Dashboard sebaran faskes</b><span>Filter fasilitas, popup atribut, radius layanan, fasilitas terdekat, rute, statistik wilayah, dan ekspor data.</span></div>
+      <div class="formal-dashboard-card">
+        <div class="dash-toolbar"><span>Peta Operasional</span><em>Live View</em></div>
+        <div class="dash-map-surface">
+          <div class="dash-boundary"></div>
+          <span class="pin p1"></span><span class="pin p2 red"></span><span class="pin p3 green"></span><span class="pin p4 yellow"></span><span class="pin p5 purple"></span>
+          <div class="dash-osm-card"><b>OSM 3D Buildings</b><small>Bangunan tampil melalui layer 3D OpenStreetMap pada peta.</small></div>
+        </div>
+        <div class="dash-bottom">
+          <div><b>Analisis</b><span>Buffer, rute, fasilitas terdekat</span></div>
+          <div><b>Data</b><span>API + GeoJSON fallback</span></div>
         </div>
       </div>
     </div>
@@ -52,31 +56,31 @@
 
   <section class="section" id="tujuan">
     <div class="container-narrow">
-      <div class="section-head"><h2>Tujuan sistem yang dipakai sebagai dasar analisis</h2><p>Analisis pada website dibuat mengikuti tujuan operasional WebGIS, bukan sekadar menampilkan peta.</p></div>
-      <div class="grid-4">
-        <div class="card"><div class="icon">1</div><h3>Inventarisasi faskes & bangunan</h3><p>Menghimpun data fasilitas kesehatan, koordinat, atribut layanan, dan bangunan hasil digitasi di dalam batas administrasi.</p></div>
-        <div class="card"><div class="icon">2</div><h3>Visualisasi sebaran</h3><p>Menampilkan persebaran fasilitas pada peta interaktif agar pola lokasi lebih mudah dibaca.</p></div>
-        <div class="card"><div class="icon">3</div><h3>Aksesibilitas dasar</h3><p>Membantu pengguna mencari fasilitas terdekat, melihat rute, dan menghitung radius layanan.</p></div>
-        <div class="card"><div class="icon">4</div><h3>Pengelolaan data</h3><p>Menyediakan login admin/operator dan fitur buat akun untuk pengembangan akses pengguna.</p></div>
+      <div class="section-head formal-head"><h2>Tujuan sistem</h2><p>Setiap fitur peta dan data disusun berdasarkan kebutuhan pengelolaan informasi fasilitas kesehatan.</p></div>
+      <div class="grid-4 formal-card-grid">
+        <div class="card formal-card"><div class="icon">01</div><h3>Inventarisasi data</h3><p>Data fasilitas, koordinat, alamat, jenis layanan, status operasional, BPJS, IGD, dokter, rawat jalan, rawat inap, dan konsultasi penyakit dalam.</p></div>
+        <div class="card formal-card"><div class="icon">02</div><h3>Visualisasi spasial</h3><p>Fasilitas ditampilkan sebagai marker, batas wilayah sebagai poligon, serta bangunan 3D dari OpenStreetMap sebagai konteks lingkungan.</p></div>
+        <div class="card formal-card"><div class="icon">03</div><h3>Analisis akses layanan</h3><p>Radius jangkauan, fasilitas terdekat, rute, dan filter layanan membantu membaca hubungan lokasi dengan kebutuhan pengguna.</p></div>
+        <div class="card formal-card"><div class="icon">04</div><h3>Pengelolaan sistem</h3><p>Halaman developer digunakan untuk login, buat akun, validasi data, pengeditan atribut, serta pemeliharaan struktur database.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="section soft">
+  <section class="section soft formal-soft">
     <div class="container-narrow split">
       <div>
-        <span class="pill">Analisis yang disediakan</span>
-        <h2 class="big-title">Dibuat agar peta bisa menjawab kebutuhan pengguna.</h2>
-        <div class="feature-list">
-          <div class="feature-row"><span class="check">✓</span><div><b>Analisis sebaran per jenis fasilitas</b><p>Grafik dan filter digunakan untuk melihat komposisi Rumah Sakit, Puskesmas, Klinik, dan Apotek.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Analisis sebaran per kecamatan</b><p>Sistem menampilkan kecamatan dengan jumlah fasilitas terbanyak dan kecamatan yang masih minim data.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Analisis jangkauan radius</b><p>Pengguna dapat memilih radius 1 km, 3 km, atau 5 km dari fasilitas tertentu untuk melihat jumlah fasilitas di sekitar titik tersebut.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Analisis fasilitas terdekat</b><p>Jika lokasi pengguna diaktifkan, sistem menghitung fasilitas terdekat berdasarkan jarak lurus.</p></div></div>
+        <span class="pill formal-pill">Analisis utama</span>
+        <h2 class="big-title">Peta tidak hanya menampilkan titik, tetapi juga membaca ketersediaan layanan.</h2>
+        <div class="feature-list formal-feature-list">
+          <div class="feature-row"><span class="check">1</span><div><b>Sebaran fasilitas per jenis dan kecamatan</b><p>Menunjukkan komposisi fasilitas kesehatan serta wilayah dengan data paling padat atau paling minim.</p></div></div>
+          <div class="feature-row"><span class="check">2</span><div><b>Filter layanan kesehatan</b><p>Data dapat disaring berdasarkan BPJS, IGD, rawat jalan/inap, ambulans, dokter, dan konsultasi penyakit dalam.</p></div></div>
+          <div class="feature-row"><span class="check">3</span><div><b>Radius jangkauan</b><p>Buffer 1 km, 3 km, dan 5 km dipakai untuk menghitung fasilitas yang berada dalam jangkauan titik tertentu.</p></div></div>
+          <div class="feature-row"><span class="check">4</span><div><b>Bangunan 3D OSM</b><p>Layer bangunan 3D digunakan sebagai konteks visual kawasan sekitar fasilitas kesehatan.</p></div></div>
         </div>
       </div>
-      <div class="preview-panel">
-        <div class="line"><b>Frontend</b><span>HTML, CSS, JavaScript, Leaflet</span></div>
-        <div class="line"><b>Analisis spasial</b><span>Buffer radius, jarak terdekat, statistik titik</span></div>
+      <div class="preview-panel formal-stack">
+        <div class="line"><b>Frontend</b><span>HTML, CSS, JavaScript, Leaflet, Chart.js</span></div>
+        <div class="line"><b>Layer 3D</b><span>OpenStreetMap Buildings</span></div>
         <div class="line"><b>Backend</b><span>PHP API</span></div>
         <div class="line"><b>Database</b><span>PostgreSQL + PostGIS</span></div>
         <div class="line"><b>SDLC</b><span>Prototype</span></div>
@@ -86,25 +90,25 @@
 
   <section class="section">
     <div class="container-narrow">
-      <div class="section-head"><h2>Struktur website</h2><p>Halaman dibuat jelas agar memenuhi kebutuhan tugas sekaligus mudah diuji.</p></div>
+      <div class="section-head formal-head"><h2>Akses pengguna</h2><p>Website menyediakan akses publik dan akses pengelolaan data.</p></div>
       <div class="grid-3">
-        <div class="card role-card"><span class="pill">Public User</span><h3>Pengunjung</h3><p>Membuka peta, mencari fasilitas, menggunakan filter, melihat analisis, dan mengekspor data tanpa login.</p></div>
-        <div class="card role-card"><span class="pill">Admin</span><h3>Pengelola Website</h3><p>Login untuk mengelola data fasilitas kesehatan yang tersimpan di PostgreSQL/PostGIS.</p></div>
-        <div class="card role-card"><span class="pill">Operator</span><h3>Pengelola Data Lapangan</h3><p>Role tambahan tersedia di database untuk kebutuhan validasi dan pembaruan data pada pengembangan lanjutan.</p></div>
+        <div class="card role-card formal-card"><span class="pill formal-pill">Public User</span><h3>Pengunjung</h3><p>Membuka peta, melihat katalog data, menggunakan filter, membaca popup, membuat rute, dan mengekspor data.</p></div>
+        <div class="card role-card formal-card"><span class="pill formal-pill">Operator</span><h3>Input Data</h3><p>Mengisi dan memperbarui atribut fasilitas kesehatan melalui halaman developer.</p></div>
+        <div class="card role-card formal-card"><span class="pill formal-pill">Admin</span><h3>Pengelola Sistem</h3><p>Mengelola akun, memastikan koneksi API, validasi database, dan memelihara data spasial PostGIS.</p></div>
       </div>
     </div>
   </section>
 
-  <section class="section soft">
+  <section class="section soft formal-soft">
     <div class="container-narrow">
-      <div class="cta">
-        <div><h2>Masuk ke mode eksplorasi peta.</h2><p>Gunakan peta untuk mencoba filter, buffer radius, fasilitas terdekat, statistik sebaran, dan ekspor CSV.</p></div>
-        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Login / Daftar</a></div>
+      <div class="cta formal-cta">
+        <div><h2>Peta interaktif fasilitas kesehatan.</h2><p>Gunakan fitur pencarian, filter, OSM 3D Buildings, radius layanan, rute, dan fasilitas terdekat.</p></div>
+        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Developer Console</a></div>
       </div>
     </div>
   </section>
 
-  <footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoHealth Purworejo</b><br><small>WebGIS fasilitas kesehatan berbasis PostgreSQL/PostGIS.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a><a href="login.html">Admin</a></div></div></footer>
+  <footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoHealth Purworejo</b><br><small>WebGIS fasilitas kesehatan berbasis PostgreSQL/PostGIS.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a><a href="login.html">Developer</a></div></div></footer>
   <script src="assets/js/common.js"></script>
 </body>
 </html>

@@ -64,36 +64,53 @@ function renderMarkers(){
 function renderBuildings(){
   const toggle = qs('#osm3dLayerToggle');
   const status = qs('#osm3dStatus');
-  if(!toggle || toggle.checked === false){
-    if(osm3dLayer && typeof osm3dLayer.remove === 'function'){
-      try{osm3dLayer.remove()}catch(e){}
+  const count = qs('#buildingCount');
+  const enabled = toggle ? toggle.checked : true;
+  if(!enabled){
+    if(osm3dLayer){
+      try{ if(typeof osm3dLayer.remove === 'function') osm3dLayer.remove(); else if(map && map.removeLayer) map.removeLayer(osm3dLayer); }catch(e){}
+      osm3dLayer = null;
     }
-    if(status) status.textContent = 'Layer OSM 3D Buildings dinonaktifkan.';
-    qs('#buildingCount').textContent = 'Nonaktif';
+    if(count) count.textContent = 'Nonaktif';
+    if(status) status.textContent = 'OSM 3D Buildings dinonaktifkan.';
     return;
   }
   if(osm3dLayer){
-    qs('#buildingCount').textContent = 'Aktif';
-    if(status) status.textContent = 'OSM 3D Buildings aktif. Zoom 16 ke atas untuk melihat bentuk bangunan lebih jelas.';
+    if(count) count.textContent = 'Aktif';
+    if(status) status.textContent = map.getZoom() >= 16 ? 'OSM 3D Buildings aktif pada zoom detail.' : 'OSM 3D aktif. Klik Mode 3D OSM atau zoom 16–18 agar bentuk bangunan terlihat.';
     return;
   }
   if(!window.OSMBuildings){
-    qs('#buildingCount').textContent = 'CDN gagal';
-    if(status) status.textContent = 'Library OSMBuildings belum termuat. Periksa koneksi internet atau CDN.';
+    if(count) count.textContent = 'CDN gagal';
+    if(status) status.textContent = 'Library OSMBuildings belum termuat. Pastikan laptop tersambung internet lalu refresh halaman.';
     return;
   }
   try{
-    osm3dLayer = new OSMBuildings(map).load('https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json');
+    osm3dLayer = new OSMBuildings(map);
+    osm3dLayer.load('https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json');
     if(typeof osm3dLayer.setStyle === 'function'){
-      osm3dLayer.setStyle({wallColor:'rgba(11,94,215,0.48)',roofColor:'rgba(246,194,62,0.78)',color:'rgba(220,53,69,0.22)'});
+      osm3dLayer.setStyle({
+        wallColor:'rgba(11,94,215,0.56)',
+        roofColor:'rgba(246,194,62,0.88)',
+        color:'rgba(220,53,69,0.24)'
+      });
     }
-    qs('#buildingCount').textContent = 'Aktif';
-    if(status) status.textContent = 'OSM 3D Buildings aktif. Data bangunan dimuat dari OpenStreetMap Buildings.';
+    if(count) count.textContent = 'Aktif';
+    if(status) status.textContent = 'OSM 3D Buildings aktif. Klik Mode 3D OSM untuk masuk ke zoom bangunan.';
   }catch(e){
-    qs('#buildingCount').textContent = 'Gagal';
-    if(status) status.textContent = 'OSM 3D Buildings gagal dimuat pada browser ini. Peta fasilitas tetap berjalan.';
+    if(count) count.textContent = 'Gagal';
+    if(status) status.textContent = 'OSM 3D gagal dimuat. Periksa koneksi internet/CDN, lalu refresh halaman.';
     console.warn('OSMBuildings error', e);
   }
+}
+function focusOsm3D(){
+  if(qs('#osm3dLayerToggle')) qs('#osm3dLayerToggle').checked = true;
+  renderBuildings();
+  const rows = filtered().filter(validCoord);
+  const target = rows[0] || facilities.find(validCoord) || {latitude:-7.72, longitude:110.02};
+  map.setView([target.latitude, target.longitude], 17, {animate:true});
+  setTimeout(renderBuildings, 600);
+  updateAnalysis('Mode 3D OSM aktif. Peta diarahkan ke zoom 17. Jika bangunan belum muncul, tunggu tile selesai dimuat atau geser sedikit peta. Layer ini membutuhkan koneksi internet.');
 }
 function renderList(){
   const rows = filtered();
@@ -128,6 +145,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   qs('#togglePanel').addEventListener('click',()=>qs('#mapSidebar').classList.toggle('closed'));
   ['searchText','kecFilter','bpjsFilter','igdFilter','penyakitDalamFilter'].forEach(id=>qs('#'+id)?.addEventListener(id==='searchText'?'input':'change',renderAll));
   qs('#osm3dLayerToggle')?.addEventListener('change',renderBuildings);
+  qs('#focus3dBtn')?.addEventListener('click',focusOsm3D);
   qs('#radiusSelect').addEventListener('change',()=>{qs('#radiusBadge').textContent=`${Number(qs('#radiusSelect').value)/1000} km`; updateAnalysis(`Radius buffer diubah menjadi ${Number(qs('#radiusSelect').value)/1000} km.`)});
   qs('#resetFilter').addEventListener('click',()=>{qs('#searchText').value=''; qs('#kecFilter').value=''; qs('#bpjsFilter').value=''; qs('#igdFilter').value=''; qs('#penyakitDalamFilter').value=''; qs('#osm3dLayerToggle').checked=true; activeTypes=new Set([...new Set(facilities.map(f=>f.jenis))]); qsa('#typeFilters input').forEach(i=>i.checked=true); renderAll();});
   qs('#zoomAll').addEventListener('click',()=>{if(markerCluster&&markerCluster.getLayers().length)map.fitBounds(markerCluster.getBounds(),{padding:[40,40]})});

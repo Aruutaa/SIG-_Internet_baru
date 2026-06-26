@@ -11,3 +11,6 @@ body.map-page{overflow:hidden;background:#e9f6ff}.map-shell{height:100vh;width:1
 
 /* Formal map revision */
 .formal-theme.map-page{font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.formal-map-top .map-btn{border-radius:8px;font-weight:700}.formal-map-top .map-btn.primary{background:#0b5ed7;color:#fff;border-color:#0b5ed7}.formal-sidebar .search-input,.formal-sidebar .map-select,.formal-sidebar .range-select{border-radius:8px;border-color:#cbd5e1}.formal-sidebar .facility-card{border-radius:10px;border:1px solid #d7dee8;box-shadow:none}.formal-sidebar .facility-card:hover{border-color:#0b5ed7;background:#f8fbff}.formal-sidebar .badge-type{border-radius:6px}.formal-sidebar .mission-card b{color:#0b1f3a}.map-note,.analysis-dock{border:1px solid #d7dee8;box-shadow:0 12px 28px rgba(15,23,42,.10)}
+
+/* OSM 3D final controls */
+.draw-tools.one-col{grid-template-columns:1fr}.draw-tools.one-col button{background:#0b5ed7;color:#fff;border-color:#0b5ed7}.layer-note{line-height:1.45}.leaflet-container canvas{outline:none}

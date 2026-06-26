@@ -30,7 +30,7 @@
       <div class="formal-hero-copy">
         <span class="kicker">PostgreSQL/PostGIS • Leaflet • OSM 3D Buildings</span>
         <h1>Sistem Informasi Geografis Fasilitas Kesehatan Kabupaten Purworejo</h1>
-        <p class="lead">Sebaran fasilitas kesehatan, batas administrasi, ketersediaan layanan, rute, radius jangkauan, dan bangunan 3D dari OpenStreetMap disajikan dalam satu platform WebGIS.</p>
+        <p class="lead">Peta fasilitas kesehatan, batas administrasi, ketersediaan layanan, rute, radius jangkauan, dan bangunan 3D OpenStreetMap untuk Kabupaten Purworejo.</p>
         <div class="hero-cta"><a class="btn btn-primary" href="map.html">Masuk ke Peta</a><a class="btn btn-light" href="data.html">Lihat Katalog Data</a></div>
         <div class="formal-metric-strip">
           <div><span>Fasilitas</span><b id="homeTotal">26</b></div>
@@ -39,12 +39,19 @@
           <div><span>Role pengguna</span><b>3</b></div>
         </div>
       </div>
-      <div class="formal-dashboard-card">
-        <div class="dash-toolbar"><span>Peta Operasional</span><em>Live View</em></div>
-        <div class="dash-map-surface">
+      <div class="formal-dashboard-card dashboard-photo-card">
+        <div class="dash-toolbar"><span>Dashboard Operasional</span><em>Health GIS</em></div>
+        <figure class="dashboard-photo">
+          <img src="assets/img/dashboard-rs.jpg" alt="Ilustrasi fasilitas rumah sakit untuk dashboard GeoHealth Purworejo" loading="eager">
+          <figcaption>
+            <b>Emergency & layanan kesehatan</b>
+            <span>Data fasilitas, IGD, dokter, rawat jalan/inap, penyakit dalam, rute, radius jangkauan, dan OSM 3D Buildings.</span>
+          </figcaption>
+        </figure>
+        <div class="dash-map-surface compact-map">
           <div class="dash-boundary"></div>
           <span class="pin p1"></span><span class="pin p2 red"></span><span class="pin p3 green"></span><span class="pin p4 yellow"></span><span class="pin p5 purple"></span>
-          <div class="dash-osm-card"><b>OSM 3D Buildings</b><small>Bangunan tampil melalui layer 3D OpenStreetMap pada peta.</small></div>
+          <div class="dash-osm-card"><b>OSM 3D Buildings</b><small>Aktif pada peta utama. Gunakan zoom 16–18 untuk melihat bangunan lebih jelas.</small></div>
         </div>
         <div class="dash-bottom">
           <div><b>Analisis</b><span>Buffer, rute, fasilitas terdekat</span></div>

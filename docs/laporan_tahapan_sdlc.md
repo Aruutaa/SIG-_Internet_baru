@@ -1,23 +1,13 @@
-# Laporan Ringkas Pengembangan GeoPlay Purworejo
+# Laporan Ringkas Pengembangan GeoHealth Purworejo
 
-## 1. Software Development Lifecycle
+## SDLC
+Model yang digunakan adalah Prototype. Tahapan dimulai dari perencanaan kebutuhan, analisis data dan user, desain antarmuka serta basis data, implementasi WebGIS, pengujian fungsi, dan pemeliharaan sistem.
 
-Model SDLC yang digunakan adalah Prototype. Model ini dipilih karena pengembangan WebGIS membutuhkan proses uji tampilan dan fungsi secara bertahap. Komponen seperti peta, simbol, filter, popup, grafik, dan dashboard admin perlu dicoba langsung agar kekurangannya dapat diperbaiki sebelum sistem dianggap final.
+## User
+Sistem memiliki tiga kelas user: pengunjung, admin, dan operator. Pengunjung memakai peta dan katalog data. Admin mengelola data fasilitas. Operator membantu pembaruan dan validasi data lapangan.
 
-Tahapan yang digunakan meliputi analisis kebutuhan, perancangan cepat, pembuatan prototype, evaluasi prototype, serta implementasi dan dokumentasi.
+## Database
+Database menggunakan PostgreSQL/PostGIS untuk menyimpan atribut dan geometri titik fasilitas kesehatan. Struktur tambahan memuat jenis fasilitas, layanan kesehatan, relasi fasilitas-layanan, kunjungan bulanan, serta log aktivitas.
 
-## 2. Jenis User
-
-Sistem memiliki tiga jenis user. Pengguna umum dapat mengakses peta, mencari fasilitas, menggunakan filter, melihat analisis, dan mengekspor data. Admin dapat login untuk menambah, mengubah, dan menghapus data fasilitas kesehatan. Operator disiapkan sebagai role tambahan untuk pengembangan validasi data lapangan.
-
-## 3. Database Geospasial
-
-Database menggunakan PostgreSQL/PostGIS. Tabel utama terdiri dari app_users, fasilitas_kesehatan, wilayah_administrasi, dan activity_logs. Data titik fasilitas kesehatan disimpan pada kolom geometri bertipe Point dengan sistem koordinat EPSG:4326. Data wilayah administrasi disimpan sebagai MultiPolygon.
-
-## 4. Tujuan Sistem
-
-Tujuan sistem adalah menginventarisasi data fasilitas kesehatan, memvisualisasikan sebaran fasilitas, membantu pengguna menemukan fasilitas terdekat, dan mendukung admin dalam mengelola data spasial.
-
-## 5. Analisis yang Digunakan
-
-Analisis yang digunakan meliputi jumlah fasilitas per jenis, jumlah fasilitas per kecamatan, kecamatan dengan data terbanyak dan paling sedikit, buffer radius 1 km sampai 5 km, fasilitas terdekat dari lokasi pengguna, dan rute menuju fasilitas. Analisis ini masih berbasis titik fasilitas yang tersedia dan belum menggunakan data jumlah penduduk atau kapasitas layanan.
+## Analisis
+Analisis yang digunakan meliputi sebaran fasilitas per jenis, sebaran per kecamatan, radius layanan, fasilitas terdekat, rute menuju fasilitas, status BPJS, IGD 24 jam, rawat inap, ambulans, dokter, tenaga kesehatan, dan kapasitas tempat tidur.

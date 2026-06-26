@@ -1,4 +1,4 @@
-# Import Database GeoPlay Purworejo
+# Import Database GeoHealth Purworejo
 
 Gunakan pgAdmin Query Tool.
 

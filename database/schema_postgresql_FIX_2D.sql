@@ -3,6 +3,10 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 DROP VIEW IF EXISTS v_fasilitas_geojson;
+DROP TABLE IF EXISTS fasilitas_layanan;
+DROP TABLE IF EXISTS kunjungan_bulanan;
+DROP TABLE IF EXISTS layanan_kesehatan;
+DROP TABLE IF EXISTS jenis_fasilitas;
 DROP TABLE IF EXISTS activity_logs;
 DROP TABLE IF EXISTS fasilitas_kesehatan;
 DROP TABLE IF EXISTS wilayah_administrasi;
@@ -102,6 +106,125 @@ SELECT jsonb_build_object(
 ) AS geojson
 FROM (
   SELECT id, nama_faskes, jenis_faskes, kecamatan, alamat, sumber_data, catatan,
+         ST_Y(geom) AS latitude, ST_X(geom) AS longitude, geom
+  FROM fasilitas_kesehatan
+  WHERE deleted_at IS NULL
+  ORDER BY jenis_faskes, nama_faskes
+) AS row;
+
+
+-- =========================================================
+-- Tambahan atribut dan tabel pendukung WebGIS kesehatan
+-- =========================================================
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS kode_faskes VARCHAR(40);
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS desa VARCHAR(120) DEFAULT '-';
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS bpjs BOOLEAN DEFAULT FALSE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS igd_24_jam BOOLEAN DEFAULT FALSE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS rawat_inap BOOLEAN DEFAULT FALSE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS ambulans BOOLEAN DEFAULT FALSE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS kapasitas_tempat_tidur INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS jumlah_dokter INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS jumlah_tenaga_kesehatan INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS rating NUMERIC(3,1) DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS akreditasi VARCHAR(80) DEFAULT '-';
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS last_verified DATE DEFAULT CURRENT_DATE;
+
+UPDATE fasilitas_kesehatan
+SET kode_faskes = COALESCE(kode_faskes, 'FS-' || LPAD(id::text, 3, '0')),
+    bpjs = CASE WHEN jenis_faskes IN ('Rumah Sakit','Puskesmas','Klinik') THEN TRUE ELSE FALSE END,
+    igd_24_jam = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN TRUE ELSE FALSE END,
+    rawat_inap = CASE WHEN jenis_faskes IN ('Rumah Sakit','Puskesmas') THEN TRUE ELSE FALSE END,
+    ambulans = CASE WHEN jenis_faskes IN ('Rumah Sakit','Puskesmas') THEN TRUE ELSE FALSE END,
+    jam_layanan = COALESCE(jam_layanan, CASE WHEN jenis_faskes = 'Rumah Sakit' THEN '24 Jam' WHEN jenis_faskes = 'Puskesmas' THEN '08.00-14.00' ELSE '08.00-21.00' END),
+    telepon = COALESCE(telepon, '-'),
+    kapasitas_tempat_tidur = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 80 WHEN jenis_faskes = 'Puskesmas' THEN 12 ELSE 0 END,
+    jumlah_dokter = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 24 WHEN jenis_faskes = 'Puskesmas' THEN 4 WHEN jenis_faskes = 'Klinik' THEN 2 ELSE 0 END,
+    jumlah_tenaga_kesehatan = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 110 WHEN jenis_faskes = 'Puskesmas' THEN 22 WHEN jenis_faskes = 'Klinik' THEN 8 ELSE 3 END,
+    rating = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 4.6 WHEN jenis_faskes = 'Puskesmas' THEN 4.3 ELSE 4.2 END,
+    desa = COALESCE(desa, '-'),
+    akreditasi = COALESCE(akreditasi, '-'),
+    last_verified = COALESCE(last_verified, CURRENT_DATE)
+WHERE deleted_at IS NULL;
+
+CREATE TABLE jenis_fasilitas (
+  id SERIAL PRIMARY KEY,
+  nama_jenis VARCHAR(80) UNIQUE NOT NULL,
+  warna VARCHAR(20),
+  ikon VARCHAR(50),
+  keterangan TEXT
+);
+INSERT INTO jenis_fasilitas (nama_jenis, warna, ikon, keterangan) VALUES
+('Rumah Sakit', '#e63946', 'hospital', 'Fasilitas rujukan dan layanan medis lanjutan'),
+('Puskesmas', '#2fb344', 'local_hospital', 'Layanan kesehatan tingkat pertama'),
+('Klinik', '#ffd23f', 'medical_services', 'Layanan praktik/klinik kesehatan'),
+('Apotek', '#7c4dff', 'pharmacy', 'Layanan obat dan farmasi'),
+('Laboratorium', '#00a6a6', 'science', 'Layanan pemeriksaan laboratorium')
+ON CONFLICT (nama_jenis) DO NOTHING;
+
+CREATE TABLE layanan_kesehatan (
+  id SERIAL PRIMARY KEY,
+  nama_layanan VARCHAR(120) UNIQUE NOT NULL,
+  kategori VARCHAR(80),
+  keterangan TEXT
+);
+INSERT INTO layanan_kesehatan (nama_layanan, kategori, keterangan) VALUES
+('Rawat Jalan', 'Pelayanan dasar', 'Pemeriksaan dan konsultasi pasien tanpa rawat inap'),
+('Rawat Inap', 'Pelayanan lanjutan', 'Pelayanan pasien yang membutuhkan perawatan inap'),
+('IGD 24 Jam', 'Gawat darurat', 'Layanan gawat darurat selama 24 jam'),
+('KIA', 'Kesehatan ibu dan anak', 'Layanan kesehatan ibu dan anak'),
+('Imunisasi', 'Pencegahan', 'Layanan imunisasi'),
+('Farmasi', 'Obat', 'Layanan obat dan farmasi'),
+('Laboratorium', 'Penunjang', 'Pemeriksaan laboratorium'),
+('Ambulans', 'Transportasi medis', 'Dukungan transportasi pasien')
+ON CONFLICT (nama_layanan) DO NOTHING;
+
+CREATE TABLE fasilitas_layanan (
+  fasilitas_id INT REFERENCES fasilitas_kesehatan(id) ON DELETE CASCADE,
+  layanan_id INT REFERENCES layanan_kesehatan(id) ON DELETE CASCADE,
+  PRIMARY KEY (fasilitas_id, layanan_id)
+);
+INSERT INTO fasilitas_layanan (fasilitas_id, layanan_id)
+SELECT f.id, l.id
+FROM fasilitas_kesehatan f
+JOIN layanan_kesehatan l ON (
+  (f.jenis_faskes = 'Rumah Sakit' AND l.nama_layanan IN ('Rawat Jalan','Rawat Inap','IGD 24 Jam','Farmasi','Laboratorium','Ambulans')) OR
+  (f.jenis_faskes = 'Puskesmas' AND l.nama_layanan IN ('Rawat Jalan','KIA','Imunisasi','Farmasi','Ambulans')) OR
+  (f.jenis_faskes = 'Klinik' AND l.nama_layanan IN ('Rawat Jalan')) OR
+  (f.jenis_faskes = 'Apotek' AND l.nama_layanan IN ('Farmasi'))
+)
+ON CONFLICT DO NOTHING;
+
+CREATE TABLE kunjungan_bulanan (
+  id SERIAL PRIMARY KEY,
+  fasilitas_id INT REFERENCES fasilitas_kesehatan(id) ON DELETE CASCADE,
+  bulan DATE NOT NULL,
+  jumlah_kunjungan INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(fasilitas_id, bulan)
+);
+INSERT INTO kunjungan_bulanan (fasilitas_id, bulan, jumlah_kunjungan)
+SELECT id, DATE '2026-01-01', CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 1200 WHEN jenis_faskes = 'Puskesmas' THEN 420 WHEN jenis_faskes = 'Klinik' THEN 160 ELSE 80 END FROM fasilitas_kesehatan
+ON CONFLICT DO NOTHING;
+INSERT INTO kunjungan_bulanan (fasilitas_id, bulan, jumlah_kunjungan)
+SELECT id, DATE '2026-02-01', CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 1350 WHEN jenis_faskes = 'Puskesmas' THEN 460 WHEN jenis_faskes = 'Klinik' THEN 180 ELSE 90 END FROM fasilitas_kesehatan
+ON CONFLICT DO NOTHING;
+INSERT INTO kunjungan_bulanan (fasilitas_id, bulan, jumlah_kunjungan)
+SELECT id, DATE '2026-03-01', CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 1480 WHEN jenis_faskes = 'Puskesmas' THEN 480 WHEN jenis_faskes = 'Klinik' THEN 190 ELSE 95 END FROM fasilitas_kesehatan
+ON CONFLICT DO NOTHING;
+
+CREATE OR REPLACE VIEW v_fasilitas_geojson AS
+SELECT jsonb_build_object(
+  'type', 'FeatureCollection',
+  'features', COALESCE(jsonb_agg(jsonb_build_object(
+    'type', 'Feature',
+    'geometry', ST_AsGeoJSON(geom)::jsonb,
+    'properties', to_jsonb(row) - 'geom'
+  )), '[]'::jsonb)
+) AS geojson
+FROM (
+  SELECT id, kode_faskes, nama_faskes, jenis_faskes, kecamatan, desa, alamat, sumber_data, catatan,
+         status_operasional, telepon, website, jam_layanan, bpjs, igd_24_jam, rawat_inap, ambulans,
+         kapasitas_tempat_tidur, jumlah_dokter, jumlah_tenaga_kesehatan, rating, akreditasi, last_verified,
          ST_Y(geom) AS latitude, ST_X(geom) AS longitude, geom
   FROM fasilitas_kesehatan
   WHERE deleted_at IS NULL

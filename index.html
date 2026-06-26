@@ -3,111 +3,108 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GeoHealth Purworejo | WebGIS Fasilitas Kesehatan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900;1000&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
-  <title>GeoHealth Purworejo | WebGIS Fasilitas Kesehatan</title>
 </head>
 <body>
-
   <nav class="site-nav">
-    <div class="container-wide nav-inner">
-      <a class="brand" href="index.html"><span class="brand-mark">✚</span><span>GeoHealth Purworejo<small>WebGIS Kesehatan</small></span></a>
+    <div class="container-narrow nav-inner">
+      <a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo Purworejo"><span>GeoHealth Purworejo<small>WebGIS Fasilitas Kesehatan</small></span></a>
       <button class="mobile-toggle" id="mobileToggle" type="button">☰</button>
       <div class="nav-links" id="navLinks">
-        <a href="index.html" data-page="index">Beranda</a>
-        <a href="map.html" data-page="map">Peta</a>
-        <a href="data.html" data-page="data">Data</a>
-        <a href="laporan.html" data-page="laporan">SDLC</a>
-        <a href="admin.html" data-page="admin">Admin</a>
+        <a class="active" href="index.html">Beranda</a>
+        <a href="map.html">Peta</a>
+        <a href="data.html">Data</a>
+        <a href="laporan.html">Laporan</a>
+        <a href="login.html">Admin</a>
       </div>
-      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login Admin</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
     </div>
   </nav>
 
   <header class="hero">
-    <div class="container hero-inner">
+    <div class="container-narrow hero-inner">
       <div>
-        <span class="kicker">Toy Story color system + Fullstack WebGIS</span>
-        <h1>Sebaran faskes Purworejo dalam satu peta.</h1>
-        <p class="lead">Rumah sakit, puskesmas, klinik, apotek, dan laboratorium ditampilkan bersama filter wilayah, ringkasan statistik, radius layanan, serta halaman pengelolaan data berbasis PostgreSQL/PostGIS.</p>
-        <div class="hero-cta"><a class="btn btn-primary" href="map.html">Eksplor Peta</a><a class="btn btn-light" href="laporan.html">Lihat SDLC</a></div>
+        <span class="kicker">GeoHealth Purworejo • Fullstack WebGIS</span>
+        <h1>Sebaran faskes Purworejo dalam satu <span>peta interaktif</span>.</h1>
+        <p class="lead">Rumah sakit, puskesmas, klinik, apotek, dan layanan pendukung ditata dalam peta interaktif dengan filter wilayah, radius layanan, rute, fasilitas terdekat, dan ringkasan statistik berbasis PostgreSQL/PostGIS.</p>
+        <div class="hero-cta"><a class="btn btn-primary" href="map.html">Eksplor Peta Interaktif</a><a class="btn btn-light" href="laporan.html">Lihat Analisis & SDLC</a></div>
         <div class="hero-facts">
-          <div class="fact"><strong id="homeTotal">0</strong><span>Fasilitas terdata</span></div>
-          <div class="fact"><strong id="homeTypes">0</strong><span>Jenis fasilitas</span></div>
-          <div class="fact"><strong id="homeDistricts">0</strong><span>Kecamatan</span></div>
-          <div class="fact"><strong id="homeBpjs">0</strong><span>Melayani BPJS</span></div>
+          <div class="fact"><strong id="homeTotal">26</strong><span>Data fasilitas</span></div>
+          <div class="fact"><strong>5</strong><span>Jenis fasilitas</span></div>
+          <div class="fact"><strong>14</strong><span>Kecamatan terdata</span></div>
+          <div class="fact"><strong>3</strong><span>Jenis user</span></div>
         </div>
       </div>
-      <div class="hero-dashboard">
-        <img src="assets/img/backdrop-dashboard.png" alt="Backdrop dashboard GeoHealth Purworejo">
-        <div class="hero-card-stack">
-          <div class="mini-card"><b>Analisis sebaran</b><span>Komposisi jenis fasilitas dan distribusi per kecamatan.</span></div>
-          <div class="mini-card"><b>Analisis radius</b><span>Jangkauan 1 km, 3 km, dan 5 km dari titik fasilitas.</span></div>
+      <div class="hero-map-card" aria-label="Mockup peta interaktif WebGIS">
+        <div class="mock-map">
+          <div class="mock-grid"></div><div class="mock-boundary"></div><div class="mock-route"></div>
+          <div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div><div class="mock-pin"></div>
+          <div class="floating-badge">Analisis aktif</div>
+          <div class="mock-panel"><b>Dashboard sebaran faskes</b><span>Filter fasilitas, popup atribut, radius layanan, fasilitas terdekat, rute, statistik wilayah, dan ekspor data.</span></div>
         </div>
       </div>
     </div>
   </header>
 
-  <section class="section">
-    <div class="container">
-      <div class="section-head"><h2>Tujuan sistem</h2><p>Setiap fitur diarahkan untuk membaca kondisi persebaran fasilitas kesehatan dan mendukung pencarian lokasi layanan.</p></div>
+  <section class="section" id="tujuan">
+    <div class="container-narrow">
+      <div class="section-head"><h2>Tujuan sistem yang dipakai sebagai dasar analisis</h2><p>Analisis pada website dibuat mengikuti tujuan operasional WebGIS, bukan sekadar menampilkan peta.</p></div>
       <div class="grid-4">
-        <div class="card"><div class="icon-bubble">1</div><h3>Inventarisasi</h3><p>Nama fasilitas, jenis, alamat, kecamatan, layanan, status BPJS, jam operasional, dan koordinat tersimpan dalam basis data.</p></div>
-        <div class="card"><div class="icon-bubble">2</div><h3>Visualisasi</h3><p>Marker berwarna, popup atribut, legenda, basemap, dan filter membuat pola lokasi lebih mudah dibaca.</p></div>
-        <div class="card"><div class="icon-bubble">3</div><h3>Akses layanan</h3><p>Pengguna dapat mencari fasilitas terdekat, melihat radius jangkauan, dan membuka rute ke lokasi tujuan.</p></div>
-        <div class="card"><div class="icon-bubble">4</div><h3>Manajemen data</h3><p>Admin dapat menambah, memperbarui, dan menghapus data melalui halaman pengelolaan.</p></div>
+        <div class="card"><div class="icon">1</div><h3>Inventarisasi faskes</h3><p>Menghimpun data nama, jenis, alamat, kecamatan, sumber data, dan koordinat fasilitas kesehatan.</p></div>
+        <div class="card"><div class="icon">2</div><h3>Visualisasi sebaran</h3><p>Menampilkan persebaran fasilitas pada peta interaktif agar pola lokasi lebih mudah dibaca.</p></div>
+        <div class="card"><div class="icon">3</div><h3>Aksesibilitas dasar</h3><p>Membantu pengguna mencari fasilitas terdekat, melihat rute, dan menghitung radius layanan.</p></div>
+        <div class="card"><div class="icon">4</div><h3>Pengelolaan data</h3><p>Menyediakan login admin untuk menambah, mengubah, dan menghapus data yang tersimpan di database.</p></div>
       </div>
     </div>
   </section>
 
   <section class="section soft">
-    <div class="container split">
+    <div class="container-narrow split">
       <div>
-        <span class="pill">Analisis utama</span>
-        <h2 class="big-title">Peta tidak berhenti di tampilan titik.</h2>
+        <span class="pill">Analisis yang disediakan</span>
+        <h2 class="big-title">Dibuat agar peta bisa menjawab kebutuhan pengguna.</h2>
         <div class="feature-list">
-          <div class="feature-row"><span class="check">✓</span><div><b>Sebaran jenis fasilitas</b><p>Perbandingan rumah sakit, puskesmas, klinik, apotek, dan laboratorium.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Sebaran per kecamatan</b><p>Jumlah fasilitas di tiap kecamatan untuk membaca wilayah padat dan wilayah yang perlu dilengkapi.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Radius layanan</b><p>Buffer 1 km, 3 km, dan 5 km untuk memperkirakan area jangkauan fasilitas.</p></div></div>
-          <div class="feature-row"><span class="check">✓</span><div><b>Fasilitas terdekat</b><p>Perhitungan jarak lurus dari titik pengguna atau pusat Purworejo.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Analisis sebaran per jenis fasilitas</b><p>Grafik dan filter digunakan untuk melihat komposisi Rumah Sakit, Puskesmas, Klinik, dan Apotek.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Analisis sebaran per kecamatan</b><p>Sistem menampilkan kecamatan dengan jumlah fasilitas terbanyak dan kecamatan yang masih minim data.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Analisis jangkauan radius</b><p>Pengguna dapat memilih radius 1 km, 3 km, atau 5 km dari fasilitas tertentu untuk melihat jumlah fasilitas di sekitar titik tersebut.</p></div></div>
+          <div class="feature-row"><span class="check">✓</span><div><b>Analisis fasilitas terdekat</b><p>Jika lokasi pengguna diaktifkan, sistem menghitung fasilitas terdekat berdasarkan jarak lurus.</p></div></div>
         </div>
       </div>
       <div class="preview-panel">
-        <div class="line"><b>Frontend</b><span>HTML, CSS, JavaScript, Leaflet, Chart.js</span></div>
-        <div class="line"><b>Backend</b><span>PHP API untuk data dan autentikasi</span></div>
-        <div class="line"><b>Database</b><span>PostgreSQL/PostGIS dengan kolom geometri</span></div>
-        <div class="line"><b>SDLC</b><span>Prototype: cepat diuji, mudah direvisi</span></div>
-        <div id="homeTypeList"></div>
+        <div class="line"><b>Frontend</b><span>HTML, CSS, JavaScript, Leaflet</span></div>
+        <div class="line"><b>Analisis spasial</b><span>Buffer radius, jarak terdekat, statistik titik</span></div>
+        <div class="line"><b>Backend</b><span>PHP API</span></div>
+        <div class="line"><b>Database</b><span>PostgreSQL + PostGIS</span></div>
+        <div class="line"><b>SDLC</b><span>Prototype</span></div>
       </div>
     </div>
   </section>
 
   <section class="section">
-    <div class="container">
-      <div class="section-head"><h2>Pengguna sistem</h2><p>Minimal dua kelas pengguna terpenuhi, dengan satu role tambahan untuk pengembangan berikutnya.</p></div>
+    <div class="container-narrow">
+      <div class="section-head"><h2>Struktur website</h2><p>Halaman dibuat jelas agar memenuhi kebutuhan tugas sekaligus mudah diuji.</p></div>
       <div class="grid-3">
-        <div class="card"><span class="pill">Pengunjung</span><h3>Akses publik</h3><p>Membuka peta, mencari fasilitas, memakai filter, melihat statistik, dan mengekspor data.</p></div>
-        <div class="card"><span class="pill">Admin</span><h3>Pengelola sistem</h3><p>Login untuk mengelola data fasilitas, layanan, status operasional, dan koordinat.</p></div>
-        <div class="card"><span class="pill">Operator</span><h3>Validasi data</h3><p>Menyiapkan pembaruan data lapangan sebelum data dipublikasikan.</p></div>
+        <div class="card role-card"><span class="pill">Public User</span><h3>Pengunjung</h3><p>Membuka peta, mencari fasilitas, menggunakan filter, melihat analisis, dan mengekspor data tanpa login.</p></div>
+        <div class="card role-card"><span class="pill">Admin</span><h3>Pengelola Website</h3><p>Login untuk mengelola data fasilitas kesehatan yang tersimpan di PostgreSQL/PostGIS.</p></div>
+        <div class="card role-card"><span class="pill">Operator</span><h3>Pengelola Data Lapangan</h3><p>Role tambahan tersedia di database untuk kebutuhan validasi dan pembaruan data pada pengembangan lanjutan.</p></div>
       </div>
     </div>
   </section>
 
   <section class="section soft">
-    <div class="container">
+    <div class="container-narrow">
       <div class="cta">
-        <div><h2>Masuk ke peta interaktif.</h2><p>Filter, radius layanan, popup, grafik, dan ekspor data tersedia dalam satu halaman.</p></div>
-        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="data.html">Katalog Data</a></div>
+        <div><h2>Masuk ke mode eksplorasi peta.</h2><p>Gunakan peta untuk mencoba filter, buffer radius, fasilitas terdekat, statistik sebaran, dan ekspor CSV.</p></div>
+        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Login Admin</a></div>
       </div>
     </div>
   </section>
 
-  <footer class="site-footer"><div class="container footer-inner"><div><b>GeoHealth Purworejo</b><br><small>WebGIS fasilitas kesehatan berbasis PostgreSQL/PostGIS.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">SDLC</a><a href="admin.html">Admin</a></div></div></footer>
-  <script src="assets/js/health-data.js"></script>
+  <footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoHealth Purworejo</b><br><small>WebGIS fasilitas kesehatan berbasis PostgreSQL/PostGIS.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a><a href="login.html">Admin</a></div></div></footer>
   <script src="assets/js/common.js"></script>
-  <script src="assets/js/home.js"></script>
-  <script>document.querySelector('[data-page="index"]').classList.add('active')</script>
 </body>
 </html>

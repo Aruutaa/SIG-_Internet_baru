@@ -1,54 +1,69 @@
-
-(function(){
-  const toggle = document.getElementById('mobileToggle');
-  const links = document.getElementById('navLinks');
-  if(toggle && links){ toggle.addEventListener('click', () => links.classList.toggle('show')); }
-})();
-function showToast(message){
-  let toast = document.querySelector('.toast');
-  if(!toast){ toast = document.createElement('div'); toast.className='toast'; document.body.appendChild(toast); }
-  toast.textContent = message;
-  toast.classList.add('show');
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+const API_BASE = 'api';
+const GEOJSON_FALLBACK = 'assets/geojson/faskes.geojson';
+const BOUNDARY_FALLBACK = 'assets/geojson/pwr.geojson';
+const TYPE_COLOR = {
+  'Rumah Sakit':'#e63946',
+  'Puskesmas':'#2fb344',
+  'Klinik':'#ffd23f',
+  'Apotek':'#7c4dff',
+  'Laboratorium':'#00a6a6',
+  'Lainnya':'#1f6fd6'
+};
+const TYPE_TEXT = {
+  'Rumah Sakit':'#ffffff',
+  'Puskesmas':'#ffffff',
+  'Klinik':'#3d2a00',
+  'Apotek':'#ffffff',
+  'Laboratorium':'#ffffff',
+  'Lainnya':'#ffffff'
+};
+function qs(sel, root=document){return root.querySelector(sel)}
+function qsa(sel, root=document){return [...root.querySelectorAll(sel)]}
+function escapeHTML(value){return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]))}
+function getTypeColor(type){return TYPE_COLOR[type] || TYPE_COLOR.Lainnya}
+function getTypeText(type){return TYPE_TEXT[type] || TYPE_TEXT.Lainnya}
+function formatNum(n){return new Intl.NumberFormat('id-ID').format(Number(n)||0)}
+function getProps(feature){return feature?.properties || {}}
+function getLatLng(feature){
+  if(!feature?.geometry) return null;
+  if(feature.geometry.type === 'Point') return {lng:Number(feature.geometry.coordinates[0]), lat:Number(feature.geometry.coordinates[1])};
+  return null;
 }
-function fmtNumber(n){ return new Intl.NumberFormat('id-ID').format(Number(n || 0)); }
-function byId(id){ return document.getElementById(id); }
-function uniqueValues(rows, key){ return [...new Set(rows.map(r=>r[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'id')); }
-function typeColor(type){
-  return { 'Rumah Sakit':'#1e88ff','Puskesmas':'#30a84f','Klinik':'#f2b705','Apotek':'#ef3b45','Laboratorium':'#7b45d9' }[type] || '#08245c';
-}
-function typeIcon(type){
-  return { 'Rumah Sakit':'✚','Puskesmas':'✚','Klinik':'▣','Apotek':'✚','Laboratorium':'⚗' }[type] || '●';
-}
-function distanceKm(aLat,aLng,bLat,bLng){
-  const R = 6371;
-  const dLat = (bLat-aLat) * Math.PI / 180;
-  const dLng = (bLng-aLng) * Math.PI / 180;
-  const s1 = Math.sin(dLat/2) ** 2;
-  const s2 = Math.cos(aLat*Math.PI/180) * Math.cos(bLat*Math.PI/180) * Math.sin(dLng/2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(s1+s2));
-}
-function toCsv(rows){
-  const headers = ['kode','nama','jenis','kecamatan','desa','alamat','telepon','jam','bpjs','igd','rawat_inap','ambulans','bed','dokter','tenaga','rating','lat','lng'];
-  const clean = v => `"${String(v ?? '').replaceAll('"','""')}"`;
-  return [headers.join(','), ...rows.map(r => headers.map(h => clean(r[h])).join(','))].join('\n');
-}
-function downloadText(filename, text){
-  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 300);
+async function tryJson(url, options={}){
+  const res = await fetch(url, {credentials:'include', ...options});
+  if(!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
 }
 async function loadFacilities(){
   try{
-    const res = await fetch('api/facilities.php?format=json', {cache:'no-store'});
-    if(!res.ok) throw new Error('API tidak aktif');
-    const json = await res.json();
-    if(Array.isArray(json.data) && json.data.length) return json.data;
-  }catch(e){}
-  const local = JSON.parse(localStorage.getItem('geohealth_facilities') || 'null');
-  return Array.isArray(local) && local.length ? local : (window.HEALTH_FACILITIES || []);
+    const data = await tryJson(`${API_BASE}/fasilitas.php`);
+    if(data && data.type === 'FeatureCollection') return {data, source:'database'};
+  }catch(e){console.warn('API fasilitas tidak aktif, memakai GeoJSON statis.', e.message)}
+  const data = await tryJson(GEOJSON_FALLBACK, {credentials:'same-origin'});
+  return {data, source:'geojson'};
 }
-function saveLocalFacilities(rows){ localStorage.setItem('geohealth_facilities', JSON.stringify(rows)); }
+async function loadBoundary(){
+  try{
+    const data = await tryJson(`${API_BASE}/boundary.php`);
+    if(data && data.type === 'FeatureCollection') return {data, source:'database'};
+  }catch(e){console.warn('API boundary tidak aktif, memakai GeoJSON statis.', e.message)}
+  const data = await tryJson(BOUNDARY_FALLBACK, {credentials:'same-origin'});
+  return {data, source:'geojson'};
+}
+function toCSV(rows){
+  const headers = ['nama_faskes','jenis_faskes','kecamatan','alamat','latitude','longitude','telepon','jam_layanan','bpjs','igd_24_jam','rawat_inap','ambulans','kapasitas_tempat_tidur','jumlah_dokter','jumlah_tenaga_kesehatan','rating','sumber_data','catatan'];
+  const csv = [headers.join(',')].concat(rows.map(r => headers.map(h => `"${String(r[h] ?? '').replace(/"/g,'""')}"`).join(','))).join('\n');
+  return '\ufeff' + csv;
+}
+function download(filename, content, mime='text/plain'){
+  const blob = new Blob([content], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function countBy(rows, key){return rows.reduce((acc,row)=>{const v=row[key]||'-'; acc[v]=(acc[v]||0)+1; return acc;}, {})}
+function topEntry(obj, asc=false){const entries=Object.entries(obj); if(!entries.length) return ['-',0]; entries.sort((a,b)=>asc ? a[1]-b[1] : b[1]-a[1]); return entries[0]}
+function setupNav(){
+  const toggle = qs('#mobileToggle'); const links = qs('#navLinks');
+  if(toggle && links) toggle.addEventListener('click', () => links.classList.toggle('open'));
+}
+document.addEventListener('DOMContentLoaded', setupNav);

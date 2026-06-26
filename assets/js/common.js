@@ -1,18 +1,19 @@
 const API_BASE = 'api';
 const GEOJSON_FALLBACK = 'assets/geojson/faskes.geojson';
 const BOUNDARY_FALLBACK = 'assets/geojson/pwr.geojson';
+const BANGUNAN_FALLBACK = 'assets/geojson/bangunan_faskes.geojson';
 const TYPE_COLOR = {
-  'Rumah Sakit':'#e63946',
-  'Puskesmas':'#2fb344',
-  'Klinik':'#ffd23f',
-  'Apotek':'#7c4dff',
-  'Laboratorium':'#00a6a6',
-  'Lainnya':'#1f6fd6'
+  'Rumah Sakit':'#E60023',
+  'Puskesmas':'#008A2E',
+  'Klinik':'#FFC400',
+  'Apotek':'#6B2CFF',
+  'Laboratorium':'#008C95',
+  'Lainnya':'#0057D9'
 };
 const TYPE_TEXT = {
   'Rumah Sakit':'#ffffff',
   'Puskesmas':'#ffffff',
-  'Klinik':'#3d2a00',
+  'Klinik':'#2a2200',
   'Apotek':'#ffffff',
   'Laboratorium':'#ffffff',
   'Lainnya':'#ffffff'
@@ -50,10 +51,18 @@ async function loadBoundary(){
   const data = await tryJson(BOUNDARY_FALLBACK, {credentials:'same-origin'});
   return {data, source:'geojson'};
 }
+async function loadBangunan(){
+  try{
+    const data = await tryJson(`${API_BASE}/bangunan.php`);
+    if(data && data.type === 'FeatureCollection') return {data, source:'database'};
+  }catch(e){console.warn('API bangunan tidak aktif, memakai GeoJSON statis.', e.message)}
+  const data = await tryJson(BANGUNAN_FALLBACK, {credentials:'same-origin'});
+  return {data, source:'geojson'};
+}
 function toCSV(rows){
-  const headers = ['nama_faskes','jenis_faskes','kecamatan','alamat','latitude','longitude','telepon','jam_layanan','bpjs','igd_24_jam','rawat_inap','ambulans','kapasitas_tempat_tidur','jumlah_dokter','jumlah_tenaga_kesehatan','rating','sumber_data','catatan'];
+  const headers = ['nama_faskes','jenis_faskes','kecamatan','alamat','latitude','longitude','telepon','jam_layanan','bpjs','igd_24_jam','igd_jam_operasional','rawat_jalan','rawat_inap','ambulans','kapasitas_tempat_tidur','jumlah_dokter','jumlah_dokter_umum','jumlah_dokter_spesialis','dokter_penyakit_dalam','konsultasi_penyakit_dalam','jadwal_penyakit_dalam','jumlah_tenaga_kesehatan','rating','sumber_data','catatan'];
   const csv = [headers.join(',')].concat(rows.map(r => headers.map(h => `"${String(r[h] ?? '').replace(/"/g,'""')}"`).join(','))).join('\n');
-  return '\ufeff' + csv;
+  return '﻿' + csv;
 }
 function download(filename, content, mime='text/plain'){
   const blob = new Blob([content], {type:mime});

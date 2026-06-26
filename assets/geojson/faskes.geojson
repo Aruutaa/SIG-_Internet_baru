@@ -36,8 +36,16 @@
           "Rawat Jalan",
           "IGD",
           "Rawat Inap",
-          "Ambulans"
-        ]
+          "Ambulans",
+          "Konsultasi Penyakit Dalam"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "24 jam",
+        "jumlah_dokter_umum": 10,
+        "jumlah_dokter_spesialis": 8,
+        "dokter_penyakit_dalam": 2,
+        "konsultasi_penyakit_dalam": true,
+        "jadwal_penyakit_dalam": "Senin-Jumat 08.00-13.00"
       },
       "geometry": {
         "type": "Point",
@@ -75,8 +83,16 @@
           "Rawat Jalan",
           "IGD",
           "Rawat Inap",
-          "Ambulans"
-        ]
+          "Ambulans",
+          "Konsultasi Penyakit Dalam"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "24 jam",
+        "jumlah_dokter_umum": 10,
+        "jumlah_dokter_spesialis": 8,
+        "dokter_penyakit_dalam": 2,
+        "konsultasi_penyakit_dalam": true,
+        "jadwal_penyakit_dalam": "Senin-Jumat 08.00-13.00"
       },
       "geometry": {
         "type": "Point",
@@ -114,8 +130,16 @@
           "Rawat Jalan",
           "IGD",
           "Rawat Inap",
-          "Ambulans"
-        ]
+          "Ambulans",
+          "Konsultasi Penyakit Dalam"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "24 jam",
+        "jumlah_dokter_umum": 10,
+        "jumlah_dokter_spesialis": 8,
+        "dokter_penyakit_dalam": 2,
+        "konsultasi_penyakit_dalam": true,
+        "jadwal_penyakit_dalam": "Senin-Jumat 08.00-13.00"
       },
       "geometry": {
         "type": "Point",
@@ -153,8 +177,16 @@
           "Rawat Jalan",
           "IGD",
           "Rawat Inap",
-          "Ambulans"
-        ]
+          "Ambulans",
+          "Konsultasi Penyakit Dalam"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "24 jam",
+        "jumlah_dokter_umum": 10,
+        "jumlah_dokter_spesialis": 8,
+        "dokter_penyakit_dalam": 2,
+        "konsultasi_penyakit_dalam": true,
+        "jadwal_penyakit_dalam": "Senin-Jumat 08.00-13.00"
       },
       "geometry": {
         "type": "Point",
@@ -192,8 +224,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -231,8 +271,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -270,8 +318,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -309,8 +365,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -348,8 +412,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -387,8 +459,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -426,8 +506,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -465,8 +553,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -504,8 +600,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -543,8 +647,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -582,8 +694,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -621,8 +741,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -660,8 +788,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -699,8 +835,16 @@
           "Rawat Jalan",
           "Imunisasi",
           "KIA",
-          "Gizi"
-        ]
+          "Gizi",
+          "Rawat Inap"
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 3,
+        "jumlah_dokter_spesialis": 1,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -737,7 +881,14 @@
         "layanan": [
           "Rawat Jalan",
           "Konsultasi Dokter"
-        ]
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 1,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -774,7 +925,14 @@
         "layanan": [
           "Rawat Jalan",
           "Konsultasi Dokter"
-        ]
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 1,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -811,7 +969,14 @@
         "layanan": [
           "Rawat Jalan",
           "Konsultasi Dokter"
-        ]
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 1,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -848,7 +1013,14 @@
         "layanan": [
           "Rawat Jalan",
           "Konsultasi Dokter"
-        ]
+        ],
+        "rawat_jalan": true,
+        "igd_jam_operasional": "Sesuai jam layanan",
+        "jumlah_dokter_umum": 1,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -884,7 +1056,14 @@
         "rating": 4.2,
         "layanan": [
           "Farmasi"
-        ]
+        ],
+        "rawat_jalan": false,
+        "igd_jam_operasional": "Tidak tersedia",
+        "jumlah_dokter_umum": 0,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -920,7 +1099,14 @@
         "rating": 4.2,
         "layanan": [
           "Farmasi"
-        ]
+        ],
+        "rawat_jalan": false,
+        "igd_jam_operasional": "Tidak tersedia",
+        "jumlah_dokter_umum": 0,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -956,7 +1142,14 @@
         "rating": 4.2,
         "layanan": [
           "Farmasi"
-        ]
+        ],
+        "rawat_jalan": false,
+        "igd_jam_operasional": "Tidak tersedia",
+        "jumlah_dokter_umum": 0,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",
@@ -992,7 +1185,14 @@
         "rating": 4.2,
         "layanan": [
           "Farmasi"
-        ]
+        ],
+        "rawat_jalan": false,
+        "igd_jam_operasional": "Tidak tersedia",
+        "jumlah_dokter_umum": 0,
+        "jumlah_dokter_spesialis": 0,
+        "dokter_penyakit_dalam": 0,
+        "konsultasi_penyakit_dalam": false,
+        "jadwal_penyakit_dalam": "Belum tersedia"
       },
       "geometry": {
         "type": "Point",

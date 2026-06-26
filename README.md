@@ -23,3 +23,12 @@ Import `database/schema_postgresql.sql` melalui pgAdmin Query Tool. Skema sudah 
 ## Akun demo
 Email: `admin@webgis.local`  
 Password: `admin123`
+
+
+## Revisi akhir
+- Layer bangunan hasil digitasi ditambahkan dalam `assets/geojson/bangunan_faskes.geojson` dan `assets/shp/bangunan_digitasi/`.
+- Shapefile siap pakai juga tersedia sebagai `assets/shp/bangunan_digitasi_shp.zip`.
+- Database ditambah tabel `bangunan_digitasi` dan `faskes_ketersediaan`.
+- Halaman login memiliki dua mode: login dan buat akun.
+- Atribut layanan kesehatan ditambah: IGD beserta jam operasional, dokter umum, dokter spesialis, rawat jalan, rawat inap, dan konsultasi dokter penyakit dalam.
+- Warna diperkuat agar kontras pada peta, kartu, tombol, dan panel analisis.

@@ -1,0 +1,534 @@
+{
+  "type": "FeatureCollection",
+  "name": "bangunan_faskes",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "id_faskes": 1,
+        "kode_bangunan": "BG-001",
+        "nama_bangunan": "Bangunan RSUD Tjitrowardojo",
+        "nama_faskes": "RSUD Tjitrowardojo",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Rumah Sakit",
+        "kecamatan": "Purworejo",
+        "luas_m2": 3465.18,
+        "jumlah_lantai": 2,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.995873,
+              -7.7202839999999995
+            ],
+            [
+              109.99651300000001,
+              -7.7202839999999995
+            ],
+            [
+              109.99651300000001,
+              -7.719844
+            ],
+            [
+              109.995873,
+              -7.719844
+            ],
+            [
+              109.995873,
+              -7.7202839999999995
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "id_faskes": 2,
+        "kode_bangunan": "BG-002",
+        "nama_bangunan": "Bangunan RS PKU Muhammadiyah Kutoarjo",
+        "nama_faskes": "RS PKU Muhammadiyah Kutoarjo",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Rumah Sakit",
+        "kecamatan": "Kutoarjo",
+        "luas_m2": 3189.54,
+        "jumlah_lantai": 2,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.911861,
+              -7.720147
+            ],
+            [
+              109.912581,
+              -7.720147
+            ],
+            [
+              109.912581,
+              -7.719786999999999
+            ],
+            [
+              109.911861,
+              -7.719786999999999
+            ],
+            [
+              109.911861,
+              -7.720147
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "id_faskes": 3,
+        "kode_bangunan": "BG-003",
+        "nama_bangunan": "Bangunan RS Purwa Husada",
+        "nama_faskes": "RS Purwa Husada",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Rumah Sakit",
+        "kecamatan": "Banyuurip",
+        "luas_m2": 3032.03,
+        "jumlah_lantai": 2,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.97223199999999,
+              -7.756841
+            ],
+            [
+              109.972792,
+              -7.756841
+            ],
+            [
+              109.972792,
+              -7.756401
+            ],
+            [
+              109.97223199999999,
+              -7.756401
+            ],
+            [
+              109.97223199999999,
+              -7.756841
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "id_faskes": 4,
+        "kode_bangunan": "BG-004",
+        "nama_bangunan": "Bangunan RSU Budi Sehat Purworejo",
+        "nama_faskes": "RSU Budi Sehat Purworejo",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Rumah Sakit",
+        "kecamatan": "Purworejo",
+        "luas_m2": 2835.14,
+        "jumlah_lantai": 2,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.998556,
+              -7.713677000000001
+            ],
+            [
+              109.999196,
+              -7.713677000000001
+            ],
+            [
+              109.999196,
+              -7.713317
+            ],
+            [
+              109.998556,
+              -7.713317
+            ],
+            [
+              109.998556,
+              -7.713677000000001
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 5,
+        "id_faskes": 5,
+        "kode_bangunan": "BG-005",
+        "nama_bangunan": "Bangunan Puskesmas Purworejo",
+        "nama_faskes": "Puskesmas Purworejo",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Purworejo",
+        "luas_m2": 3898.32,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              110.019516,
+              -7.717434
+            ],
+            [
+              110.020236,
+              -7.717434
+            ],
+            [
+              110.020236,
+              -7.716994000000001
+            ],
+            [
+              110.019516,
+              -7.716994000000001
+            ],
+            [
+              110.019516,
+              -7.717434
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 6,
+        "id_faskes": 6,
+        "kode_bangunan": "BG-006",
+        "nama_bangunan": "Bangunan Puskesmas Kutoarjo",
+        "nama_faskes": "Puskesmas Kutoarjo",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Kutoarjo",
+        "luas_m2": 2480.75,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.913836,
+              -7.716163
+            ],
+            [
+              109.91439600000001,
+              -7.716163
+            ],
+            [
+              109.91439600000001,
+              -7.715802999999999
+            ],
+            [
+              109.913836,
+              -7.715802999999999
+            ],
+            [
+              109.913836,
+              -7.716163
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 7,
+        "id_faskes": 7,
+        "kode_bangunan": "BG-007",
+        "nama_bangunan": "Bangunan Puskesmas Bayan",
+        "nama_faskes": "Puskesmas Bayan",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Bayan",
+        "luas_m2": 3465.18,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.92833,
+              -7.720103
+            ],
+            [
+              109.92897,
+              -7.720103
+            ],
+            [
+              109.92897,
+              -7.719663000000001
+            ],
+            [
+              109.92833,
+              -7.719663000000001
+            ],
+            [
+              109.92833,
+              -7.720103
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 8,
+        "id_faskes": 8,
+        "kode_bangunan": "BG-008",
+        "nama_bangunan": "Bangunan Puskesmas Bener",
+        "nama_faskes": "Puskesmas Bener",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Bener",
+        "luas_m2": 3189.54,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              110.049961,
+              -7.641395
+            ],
+            [
+              110.050681,
+              -7.641395
+            ],
+            [
+              110.050681,
+              -7.641035
+            ],
+            [
+              110.049961,
+              -7.641035
+            ],
+            [
+              110.049961,
+              -7.641395
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 9,
+        "id_faskes": 9,
+        "kode_bangunan": "BG-009",
+        "nama_bangunan": "Bangunan Puskesmas Kaligesing",
+        "nama_faskes": "Puskesmas Kaligesing",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Kaligesing",
+        "luas_m2": 3032.03,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              110.079287,
+              -7.734903
+            ],
+            [
+              110.079847,
+              -7.734903
+            ],
+            [
+              110.079847,
+              -7.734463000000001
+            ],
+            [
+              110.079287,
+              -7.734463000000001
+            ],
+            [
+              110.079287,
+              -7.734903
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 10,
+        "id_faskes": 10,
+        "kode_bangunan": "BG-010",
+        "nama_bangunan": "Bangunan Puskesmas Grabag",
+        "nama_faskes": "Puskesmas Grabag",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Grabag",
+        "luas_m2": 2835.14,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.911461,
+              -7.786230000000001
+            ],
+            [
+              109.912101,
+              -7.786230000000001
+            ],
+            [
+              109.912101,
+              -7.78587
+            ],
+            [
+              109.911461,
+              -7.78587
+            ],
+            [
+              109.911461,
+              -7.786230000000001
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 11,
+        "id_faskes": 11,
+        "kode_bangunan": "BG-011",
+        "nama_bangunan": "Bangunan Puskesmas Loano",
+        "nama_faskes": "Puskesmas Loano",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Loano",
+        "luas_m2": 3898.32,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              110.019485,
+              -7.681464999999999
+            ],
+            [
+              110.020205,
+              -7.681464999999999
+            ],
+            [
+              110.020205,
+              -7.681025
+            ],
+            [
+              110.019485,
+              -7.681025
+            ],
+            [
+              110.019485,
+              -7.681464999999999
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 12,
+        "id_faskes": 12,
+        "kode_bangunan": "BG-012",
+        "nama_bangunan": "Bangunan Puskesmas Butuh",
+        "nama_faskes": "Puskesmas Butuh",
+        "jenis_bangunan": "Bangunan Fasilitas Kesehatan",
+        "jenis_faskes": "Puskesmas",
+        "kecamatan": "Butuh",
+        "luas_m2": 2480.75,
+        "jumlah_lantai": 1,
+        "sumber_digitasi": "Digitasi bangunan dalam cakupan batas administrasi",
+        "catatan": "Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              109.950987,
+              -7.739992
+            ],
+            [
+              109.951547,
+              -7.739992
+            ],
+            [
+              109.951547,
+              -7.739631999999999
+            ],
+            [
+              109.950987,
+              -7.739631999999999
+            ],
+            [
+              109.950987,
+              -7.739992
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -21,7 +21,7 @@
         <a href="laporan.html">Laporan</a>
         <a href="login.html">Admin</a>
       </div>
-      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login Admin</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login / Daftar</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
     </div>
   </nav>
 
@@ -30,7 +30,7 @@
       <div>
         <span class="kicker">GeoHealth Purworejo • Fullstack WebGIS</span>
         <h1>Sebaran faskes Purworejo dalam satu <span>peta interaktif</span>.</h1>
-        <p class="lead">Rumah sakit, puskesmas, klinik, apotek, dan layanan pendukung ditata dalam peta interaktif dengan filter wilayah, radius layanan, rute, fasilitas terdekat, dan ringkasan statistik berbasis PostgreSQL/PostGIS.</p>
+        <p class="lead">Rumah sakit, puskesmas, klinik, apotek, layer bangunan hasil digitasi, dan ketersediaan layanan kesehatan ditampilkan dalam peta interaktif berbasis PostgreSQL/PostGIS.</p>
         <div class="hero-cta"><a class="btn btn-primary" href="map.html">Eksplor Peta Interaktif</a><a class="btn btn-light" href="laporan.html">Lihat Analisis & SDLC</a></div>
         <div class="hero-facts">
           <div class="fact"><strong id="homeTotal">26</strong><span>Data fasilitas</span></div>
@@ -54,10 +54,10 @@
     <div class="container-narrow">
       <div class="section-head"><h2>Tujuan sistem yang dipakai sebagai dasar analisis</h2><p>Analisis pada website dibuat mengikuti tujuan operasional WebGIS, bukan sekadar menampilkan peta.</p></div>
       <div class="grid-4">
-        <div class="card"><div class="icon">1</div><h3>Inventarisasi faskes</h3><p>Menghimpun data nama, jenis, alamat, kecamatan, sumber data, dan koordinat fasilitas kesehatan.</p></div>
+        <div class="card"><div class="icon">1</div><h3>Inventarisasi faskes & bangunan</h3><p>Menghimpun data fasilitas kesehatan, koordinat, atribut layanan, dan bangunan hasil digitasi di dalam batas administrasi.</p></div>
         <div class="card"><div class="icon">2</div><h3>Visualisasi sebaran</h3><p>Menampilkan persebaran fasilitas pada peta interaktif agar pola lokasi lebih mudah dibaca.</p></div>
         <div class="card"><div class="icon">3</div><h3>Aksesibilitas dasar</h3><p>Membantu pengguna mencari fasilitas terdekat, melihat rute, dan menghitung radius layanan.</p></div>
-        <div class="card"><div class="icon">4</div><h3>Pengelolaan data</h3><p>Menyediakan login admin untuk menambah, mengubah, dan menghapus data yang tersimpan di database.</p></div>
+        <div class="card"><div class="icon">4</div><h3>Pengelolaan data</h3><p>Menyediakan login admin/operator dan fitur buat akun untuk pengembangan akses pengguna.</p></div>
       </div>
     </div>
   </section>
@@ -99,7 +99,7 @@
     <div class="container-narrow">
       <div class="cta">
         <div><h2>Masuk ke mode eksplorasi peta.</h2><p>Gunakan peta untuk mencoba filter, buffer radius, fasilitas terdekat, statistik sebaran, dan ekspor CSV.</p></div>
-        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Login Admin</a></div>
+        <div class="hero-cta"><a class="btn btn-light" href="map.html">Buka Peta</a><a class="btn btn-primary" href="login.html">Login / Daftar</a></div>
       </div>
     </div>
   </section>

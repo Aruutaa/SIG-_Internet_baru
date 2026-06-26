@@ -2,7 +2,11 @@
 -- Jalankan di PostgreSQL yang sudah memiliki ekstensi PostGIS.
 CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+DROP VIEW IF EXISTS v_bangunan_digitasi_geojson;
+DROP VIEW IF EXISTS v_bangunan_digitasi_geojson;
 DROP VIEW IF EXISTS v_fasilitas_geojson;
+DROP TABLE IF EXISTS faskes_ketersediaan;
+DROP TABLE IF EXISTS bangunan_digitasi;
 DROP TABLE IF EXISTS fasilitas_layanan;
 DROP TABLE IF EXISTS kunjungan_bulanan;
 DROP TABLE IF EXISTS layanan_kesehatan;
@@ -230,3 +234,112 @@ FROM (
   WHERE deleted_at IS NULL
   ORDER BY jenis_faskes, nama_faskes
 ) AS row;
+
+
+-- =========================================================
+-- REVISI: Layer bangunan digitasi dan ketersediaan fasilitas
+-- =========================================================
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS igd_jam_operasional VARCHAR(160) DEFAULT 'Tidak tersedia';
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS rawat_jalan BOOLEAN DEFAULT TRUE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS jumlah_dokter_umum INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS jumlah_dokter_spesialis INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS dokter_penyakit_dalam INT DEFAULT 0;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS konsultasi_penyakit_dalam BOOLEAN DEFAULT FALSE;
+ALTER TABLE fasilitas_kesehatan ADD COLUMN IF NOT EXISTS jadwal_penyakit_dalam VARCHAR(160) DEFAULT 'Belum tersedia';
+
+UPDATE fasilitas_kesehatan
+SET igd_jam_operasional = CASE WHEN igd_24_jam THEN '24 jam' ELSE 'Tidak tersedia' END,
+    rawat_jalan = CASE WHEN jenis_faskes IN ('Rumah Sakit','Puskesmas','Klinik') THEN TRUE ELSE FALSE END,
+    jumlah_dokter_umum = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 10 WHEN jenis_faskes = 'Puskesmas' THEN 3 WHEN jenis_faskes = 'Klinik' THEN 1 ELSE 0 END,
+    jumlah_dokter_spesialis = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 8 WHEN jenis_faskes = 'Puskesmas' THEN 1 ELSE 0 END,
+    dokter_penyakit_dalam = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 2 ELSE 0 END,
+    konsultasi_penyakit_dalam = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN TRUE ELSE FALSE END,
+    jadwal_penyakit_dalam = CASE WHEN jenis_faskes = 'Rumah Sakit' THEN 'Senin-Jumat 08.00-13.00' ELSE 'Belum tersedia' END;
+
+CREATE TABLE IF NOT EXISTS faskes_ketersediaan (
+  id SERIAL PRIMARY KEY,
+  id_faskes INT UNIQUE REFERENCES fasilitas_kesehatan(id) ON DELETE CASCADE,
+  igd_tersedia BOOLEAN DEFAULT FALSE,
+  igd_jam_operasional VARCHAR(160),
+  jumlah_dokter_umum INT DEFAULT 0,
+  jumlah_dokter_spesialis INT DEFAULT 0,
+  dokter_penyakit_dalam INT DEFAULT 0,
+  rawat_jalan BOOLEAN DEFAULT TRUE,
+  rawat_inap BOOLEAN DEFAULT FALSE,
+  konsultasi_penyakit_dalam BOOLEAN DEFAULT FALSE,
+  jadwal_penyakit_dalam VARCHAR(160),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+INSERT INTO faskes_ketersediaan (id_faskes, igd_tersedia, igd_jam_operasional, jumlah_dokter_umum, jumlah_dokter_spesialis, dokter_penyakit_dalam, rawat_jalan, rawat_inap, konsultasi_penyakit_dalam, jadwal_penyakit_dalam)
+SELECT id, igd_24_jam, igd_jam_operasional, jumlah_dokter_umum, jumlah_dokter_spesialis, dokter_penyakit_dalam, rawat_jalan, rawat_inap, konsultasi_penyakit_dalam, jadwal_penyakit_dalam
+FROM fasilitas_kesehatan
+ON CONFLICT (id_faskes) DO UPDATE SET
+  igd_tersedia = EXCLUDED.igd_tersedia,
+  igd_jam_operasional = EXCLUDED.igd_jam_operasional,
+  jumlah_dokter_umum = EXCLUDED.jumlah_dokter_umum,
+  jumlah_dokter_spesialis = EXCLUDED.jumlah_dokter_spesialis,
+  dokter_penyakit_dalam = EXCLUDED.dokter_penyakit_dalam,
+  rawat_jalan = EXCLUDED.rawat_jalan,
+  rawat_inap = EXCLUDED.rawat_inap,
+  konsultasi_penyakit_dalam = EXCLUDED.konsultasi_penyakit_dalam,
+  jadwal_penyakit_dalam = EXCLUDED.jadwal_penyakit_dalam,
+  updated_at = NOW();
+
+CREATE TABLE IF NOT EXISTS bangunan_digitasi (
+  id SERIAL PRIMARY KEY,
+  id_faskes INT REFERENCES fasilitas_kesehatan(id) ON DELETE SET NULL,
+  kode_bangunan VARCHAR(30),
+  nama_bangunan VARCHAR(180),
+  nama_faskes VARCHAR(180),
+  jenis_bangunan VARCHAR(100),
+  jenis_faskes VARCHAR(80),
+  kecamatan VARCHAR(100),
+  luas_m2 NUMERIC(12,2),
+  jumlah_lantai INT DEFAULT 1,
+  sumber_digitasi VARCHAR(180),
+  catatan TEXT,
+  geom geometry(Polygon, 4326) NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_bangunan_digitasi_geom ON bangunan_digitasi USING GIST (geom);
+CREATE INDEX IF NOT EXISTS idx_bangunan_digitasi_faskes ON bangunan_digitasi (id_faskes);
+TRUNCATE bangunan_digitasi RESTART IDENTITY;
+INSERT INTO bangunan_digitasi (id_faskes, kode_bangunan, nama_bangunan, nama_faskes, jenis_bangunan, jenis_faskes, kecamatan, luas_m2, jumlah_lantai, sumber_digitasi, catatan, geom) VALUES
+(1, 'BG-001', 'Bangunan RSUD Tjitrowardojo', 'RSUD Tjitrowardojo', 'Bangunan Fasilitas Kesehatan', 'Rumah Sakit', 'Purworejo', 3465.18, 2, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.995873 -7.7202839999999995,109.99651300000001 -7.7202839999999995,109.99651300000001 -7.719844,109.995873 -7.719844,109.995873 -7.7202839999999995))'),4326)),
+(2, 'BG-002', 'Bangunan RS PKU Muhammadiyah Kutoarjo', 'RS PKU Muhammadiyah Kutoarjo', 'Bangunan Fasilitas Kesehatan', 'Rumah Sakit', 'Kutoarjo', 3189.54, 2, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.911861 -7.720147,109.912581 -7.720147,109.912581 -7.719786999999999,109.911861 -7.719786999999999,109.911861 -7.720147))'),4326)),
+(3, 'BG-003', 'Bangunan RS Purwa Husada', 'RS Purwa Husada', 'Bangunan Fasilitas Kesehatan', 'Rumah Sakit', 'Banyuurip', 3032.03, 2, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.97223199999999 -7.756841,109.972792 -7.756841,109.972792 -7.756401,109.97223199999999 -7.756401,109.97223199999999 -7.756841))'),4326)),
+(4, 'BG-004', 'Bangunan RSU Budi Sehat Purworejo', 'RSU Budi Sehat Purworejo', 'Bangunan Fasilitas Kesehatan', 'Rumah Sakit', 'Purworejo', 2835.14, 2, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.998556 -7.713677000000001,109.999196 -7.713677000000001,109.999196 -7.713317,109.998556 -7.713317,109.998556 -7.713677000000001))'),4326)),
+(5, 'BG-005', 'Bangunan Puskesmas Purworejo', 'Puskesmas Purworejo', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Purworejo', 3898.32, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((110.019516 -7.717434,110.020236 -7.717434,110.020236 -7.716994000000001,110.019516 -7.716994000000001,110.019516 -7.717434))'),4326)),
+(6, 'BG-006', 'Bangunan Puskesmas Kutoarjo', 'Puskesmas Kutoarjo', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Kutoarjo', 2480.75, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.913836 -7.716163,109.91439600000001 -7.716163,109.91439600000001 -7.715802999999999,109.913836 -7.715802999999999,109.913836 -7.716163))'),4326)),
+(7, 'BG-007', 'Bangunan Puskesmas Bayan', 'Puskesmas Bayan', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Bayan', 3465.18, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.92833 -7.720103,109.92897 -7.720103,109.92897 -7.719663000000001,109.92833 -7.719663000000001,109.92833 -7.720103))'),4326)),
+(8, 'BG-008', 'Bangunan Puskesmas Bener', 'Puskesmas Bener', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Bener', 3189.54, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((110.049961 -7.641395,110.050681 -7.641395,110.050681 -7.641035,110.049961 -7.641035,110.049961 -7.641395))'),4326)),
+(9, 'BG-009', 'Bangunan Puskesmas Kaligesing', 'Puskesmas Kaligesing', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Kaligesing', 3032.03, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((110.079287 -7.734903,110.079847 -7.734903,110.079847 -7.734463000000001,110.079287 -7.734463000000001,110.079287 -7.734903))'),4326)),
+(10, 'BG-010', 'Bangunan Puskesmas Grabag', 'Puskesmas Grabag', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Grabag', 2835.14, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.911461 -7.786230000000001,109.912101 -7.786230000000001,109.912101 -7.78587,109.911461 -7.78587,109.911461 -7.786230000000001))'),4326)),
+(11, 'BG-011', 'Bangunan Puskesmas Loano', 'Puskesmas Loano', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Loano', 3898.32, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((110.019485 -7.681464999999999,110.020205 -7.681464999999999,110.020205 -7.681025,110.019485 -7.681025,110.019485 -7.681464999999999))'),4326)),
+(12, 'BG-012', 'Bangunan Puskesmas Butuh', 'Puskesmas Butuh', 'Bangunan Fasilitas Kesehatan', 'Puskesmas', 'Butuh', 2480.75, 1, 'Digitasi bangunan dalam cakupan batas administrasi', 'Contoh layer hasil digitasi bangunan untuk kebutuhan WebGIS kesehatan.', ST_SetSRID(ST_GeomFromText('POLYGON((109.950987 -7.739992,109.951547 -7.739992,109.951547 -7.739631999999999,109.950987 -7.739631999999999,109.950987 -7.739992))'),4326));
+
+
+DROP VIEW IF EXISTS v_bangunan_digitasi_geojson;
+CREATE VIEW v_bangunan_digitasi_geojson AS
+SELECT jsonb_build_object(
+  'type','FeatureCollection',
+  'features',COALESCE(jsonb_agg(jsonb_build_object(
+    'type','Feature',
+    'geometry',ST_AsGeoJSON(geom)::jsonb,
+    'properties',to_jsonb(bangunan_digitasi) - 'geom'
+  )), '[]'::jsonb)
+) AS geojson
+FROM bangunan_digitasi;
+
+DROP VIEW IF EXISTS v_fasilitas_geojson;
+CREATE VIEW v_fasilitas_geojson AS
+SELECT jsonb_build_object(
+  'type','FeatureCollection',
+  'features',COALESCE(jsonb_agg(jsonb_build_object(
+    'type','Feature',
+    'geometry',ST_AsGeoJSON(geom)::jsonb,
+    'properties',to_jsonb(fasilitas_kesehatan) - 'geom'
+  )), '[]'::jsonb)
+) AS geojson
+FROM fasilitas_kesehatan
+WHERE deleted_at IS NULL;

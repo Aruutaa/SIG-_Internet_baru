@@ -1,10 +1,10 @@
 :root{
-  --toy-blue:#1f6fd6;
-  --toy-blue-dark:#0f3f94;
-  --toy-yellow:#ffd23f;
-  --toy-red:#e63946;
-  --toy-green:#2fb344;
-  --toy-purple:#7c4dff;
+  --toy-blue:#0057D9;
+  --toy-blue-dark:#003B95;
+  --toy-yellow:#FFC400;
+  --toy-red:#E60023;
+  --toy-green:#008A2E;
+  --toy-purple:#6B2CFF;
   --toy-sky:#e9f6ff;
   --ink:#14213d;
   --muted:#5b667a;
@@ -52,3 +52,13 @@ button,input,select,textarea{font:inherit}
 .catalog-toolbar{margin-bottom:18px}.toolbar-actions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}.publication-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}.publication-card{background:#fff;border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:var(--shadow-sm);transition:.18s ease}.publication-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}.pub-cover{height:132px;background:linear-gradient(135deg,var(--card-color),#e9f6ff);position:relative;overflow:hidden}.pub-cover::before{content:"";position:absolute;inset:18px;background-image:linear-gradient(rgba(255,255,255,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.35) 1px,transparent 1px);background-size:24px 24px;border-radius:18px}.pub-cover::after{content:"";position:absolute;right:28px;top:28px;width:58px;height:58px;border-radius:20px;background:#fff;box-shadow:0 14px 28px rgba(20,33,61,.18)}.pub-cover span{position:absolute;left:18px;top:18px;background:#10294f;color:#fff;border-radius:999px;padding:9px 14px;font-weight:1000}.pub-body{padding:18px}.pub-body h3{margin:6px 0 8px;font-size:1.12rem}.pub-body p{color:var(--muted);font-weight:700;margin:0 0 12px}.pub-meta{font-weight:1000;color:#667085;font-size:.86rem}.pub-tags{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.pub-tags span,.mini-tag{display:inline-flex;align-items:center;border-radius:999px;background:#f0f7ff;border:1px solid var(--line);padding:5px 9px;font-size:.78rem;font-weight:1000;color:#10294f}.health-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.health-checks label{background:#f5f9ff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-weight:900;color:#344054}.health-checks input{accent-color:var(--toy-blue)}
 @media(max-width:1020px){.publication-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:720px){.publication-grid{grid-template-columns:1fr}.health-checks{grid-template-columns:1fr}}
+
+
+/* Revisi kontras dan komponen akun */
+.site-nav{background:rgba(255,255,255,.96);border-bottom:2px solid #cfe0f5}
+.hero h1,.page-hero h1,.section-head h2,.big-title{color:#06285f}
+.lead,.section-head p,.card p,.feature-row p,.page-hero p{color:#2f3b52}
+.btn-primary{background:linear-gradient(135deg,#0057D9,#009DFF);box-shadow:0 16px 32px rgba(0,87,217,.30)}
+.btn-danger{background:#E60023;color:#fff}.btn-success{background:#008A2E;color:#fff}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}.auth-tab{border:2px solid var(--line);background:#fff;border-radius:999px;padding:11px;font-weight:1000;cursor:pointer}.auth-tab.active{background:#06285f;color:#fff;border-color:#06285f}.auth-pane.hidden{display:none}.help-text{font-size:.88rem;color:#344054;font-weight:800;margin-top:6px}.building-chip{display:inline-flex;align-items:center;gap:6px;background:#001f54;color:#fff;border-radius:999px;padding:5px 9px;font-size:.76rem;font-weight:1000}.layer-note{background:#e8f3ff;border:1px solid #a9cffc;border-radius:14px;padding:10px 12px;color:#0b336d;font-weight:900;font-size:.88rem}.wide-form{grid-column:1/-1}.mini-tag.warning{background:#fff3bd;border-color:#ffd45a;color:#613f00}.mini-tag.good{background:#e8fbe9;border-color:#9adfa0;color:#075c1b}
+@media(max-width:720px){.auth-tabs{grid-template-columns:1fr}}

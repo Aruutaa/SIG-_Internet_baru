@@ -1,3 +1,46 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login Admin | GeoPlay Purworejo</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet"><link rel="stylesheet" href="assets/css/style.css"></head><body>
-<nav class="site-nav"><div class="container-narrow nav-inner"><a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoPlay Purworejo<small>Login Admin</small></span></a><div class="nav-links"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a href="data.html">Data</a><a href="laporan.html">Laporan</a></div></div></nav>
-<main class="container-narrow"><div class="auth-card"><span class="pill">Admin Area</span><h1 style="font-size:2.3rem;margin:14px 0 8px">Masuk pengelola data.</h1><p style="color:#667085">Gunakan akun admin yang tersedia di file SQL database. Akun demo: <b>admin@webgis.local</b> / <b>admin123</b>.</p><form id="loginForm"><div class="form-group"><label>Email</label><input class="input" type="email" name="email" value="admin@webgis.local" required></div><div class="form-group" style="margin-top:12px"><label>Password</label><input class="input" type="password" name="password" value="admin123" required></div><div id="loginMsg" style="margin-top:14px"></div><button class="btn btn-primary" style="width:100%;margin-top:16px" type="submit">Login</button></form><p style="color:#667085;margin-top:16px;font-size:.9rem">Jika API belum aktif, halaman tetap menyediakan mode demo lokal agar struktur admin dapat diuji, tetapi perubahan data hanya tersimpan di browser.</p></div></main><script src="assets/js/common.js"></script><script src="assets/js/auth.js"></script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900;1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <title>Login Admin | GeoHealth Purworejo</title>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="container-wide nav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">✚</span><span>GeoHealth Purworejo<small>WebGIS Kesehatan</small></span></a>
+      <button class="mobile-toggle" id="mobileToggle" type="button">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" data-page="index">Beranda</a>
+        <a href="map.html" data-page="map">Peta</a>
+        <a href="data.html" data-page="data">Data</a>
+        <a href="laporan.html" data-page="laporan">SDLC</a>
+        <a href="admin.html" data-page="admin">Admin</a>
+      </div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+    </div>
+  </nav>
+
+  <main class="login-shell">
+    <section class="login-visual"><img src="assets/img/backdrop-dashboard.png" alt="Backdrop dashboard GeoHealth"></section>
+    <section class="login-card">
+      <form id="loginForm" class="card">
+        <span class="pill">Admin area</span>
+        <h1 style="color:var(--navy);font-size:42px;line-height:1;margin:16px 0 8px">Masuk dashboard.</h1>
+        <p style="color:var(--muted);font-weight:800;margin:0 0 20px">Gunakan akun admin untuk mengelola data fasilitas kesehatan.</p>
+        <div class="control"><label for="email">Email</label><input class="input" id="email" type="email" value="admin@webgis.local" required></div>
+        <div class="control" style="margin-top:12px"><label for="password">Password</label><input class="input" id="password" type="password" value="admin123" required></div>
+        <button class="btn btn-primary" style="width:100%;margin-top:18px" type="submit">Masuk</button>
+        <p style="color:var(--muted);font-weight:800;font-size:13px;margin-top:16px">Akun awal: admin@webgis.local / admin123. Ganti setelah database aktif.</p>
+      </form>
+    </section>
+  </main>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

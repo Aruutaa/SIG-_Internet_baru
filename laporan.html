@@ -1,33 +1,68 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Laporan Pengembangan | GeoPlay Purworejo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900;1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <title>SDLC & Dokumentasi | GeoHealth Purworejo</title>
 </head>
 <body>
-<nav class="site-nav"><div class="container-narrow nav-inner"><a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoPlay Purworejo<small>Laporan Sistem</small></span></a><button class="mobile-toggle" id="mobileToggle" type="button">☰</button><div class="nav-links" id="navLinks"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a href="data.html">Data</a><a class="active" href="laporan.html">Laporan</a><a href="login.html">Admin</a></div><div class="nav-actions"><a class="btn btn-primary" href="map.html">Buka Peta</a></div></div></nav>
-<header class="page-hero"><div class="container-narrow"><span class="pill">Laporan Sistem</span><h1>Rancangan WebGIS, SDLC, user, database, dan analisis.</h1><p>Halaman ini disiapkan untuk menjawab instruksi tugas: memilih software development lifecycle, menyediakan minimal dua jenis user, serta menerapkan database geospasial untuk menyimpan data.</p></div></header>
-<main class="section"><div class="container-narrow split" style="align-items:start">
-<section>
-  <div class="card" style="margin-bottom:18px"><h2>1. Software Development Lifecycle</h2><p>Model SDLC yang dipilih adalah <b>Prototype</b>. Model ini sesuai untuk pengembangan WebGIS karena tampilan peta, filter, simbol, popup, dan dashboard admin perlu diuji secara bertahap. Melalui model prototype, rancangan awal dapat langsung dicoba oleh pengguna, kemudian diperbaiki sampai fungsi utama berjalan sesuai kebutuhan.</p></div>
-  <div class="timeline">
-    <div class="timeline-item"><b>Analisis kebutuhan</b><p>Kebutuhan utama sistem adalah menampilkan peta fasilitas kesehatan, menyediakan pencarian dan filter, menampilkan analisis sederhana, menyediakan login admin, serta menyimpan data dalam PostgreSQL/PostGIS.</p></div>
-    <div class="timeline-item"><b>Perancangan cepat</b><p>Rancangan dibuat dalam beberapa halaman, yaitu beranda, peta interaktif, katalog data, login admin, dashboard admin, dan laporan sistem. Warna website dikembangkan dengan gaya Toy Story agar tampilan lebih kuat dan mudah dikenali.</p></div>
-    <div class="timeline-item"><b>Pembuatan prototype</b><p>Prototype dibangun menggunakan HTML, CSS, JavaScript, Leaflet, Chart.js, PHP API, dan PostgreSQL/PostGIS. Jika API belum aktif, sistem tetap dapat diuji melalui data GeoJSON statis sebagai cadangan.</p></div>
-    <div class="timeline-item"><b>Evaluasi prototype</b><p>Evaluasi dilakukan pada fitur pencarian, filter jenis fasilitas, filter kecamatan, popup atribut, buffer radius, fasilitas terdekat, rute, ekspor CSV, login admin, dan form pengelolaan data.</p></div>
-    <div class="timeline-item"><b>Implementasi dan dokumentasi</b><p>Implementasi dilengkapi file SQL, struktur folder, README, dan halaman laporan agar sistem dapat dipasang kembali melalui server lokal dan pgAdmin.</p></div>
-  </div>
-</section>
-<aside>
-  <div class="card" style="margin-bottom:18px"><h3>2. Tujuan sistem</h3><p>Tujuan sistem adalah menginventarisasi fasilitas kesehatan, memvisualisasikan sebaran fasilitas, membantu pengguna mencari fasilitas terdekat, dan menyediakan pengelolaan data oleh admin. Oleh karena itu, analisis yang dipakai berfokus pada sebaran titik, kategori fasilitas, kecamatan, radius layanan, dan jarak terdekat.</p></div>
-  <div class="card" style="margin-bottom:18px"><h3>3. Jenis user</h3><p><b>Pengguna umum</b> dapat melihat peta, melakukan pencarian, memfilter data, membaca popup, melihat analisis, dan mengekspor CSV. <b>Admin</b> dapat login untuk menambah, mengubah, dan menghapus data. Role <b>operator</b> juga disediakan dalam database untuk pengembangan validasi data lapangan.</p></div>
-  <div class="card" style="margin-bottom:18px"><h3>4. Basis data geospasial</h3><p>Database menggunakan PostgreSQL/PostGIS. Tabel utama yang digunakan adalah <b>app_users</b>, <b>fasilitas_kesehatan</b>, <b>wilayah_administrasi</b>, dan <b>activity_logs</b>. Kolom geometri pada tabel fasilitas menyimpan titik koordinat, sedangkan tabel wilayah menyimpan batas administrasi.</p></div>
-  <div class="card" style="margin-bottom:18px"><h3>5. Analisis yang digunakan</h3><p>Analisis yang diterapkan meliputi jumlah fasilitas per jenis, jumlah fasilitas per kecamatan, kecamatan dengan data terbanyak dan paling sedikit, buffer radius 1 km sampai 5 km, fasilitas terdekat dari lokasi pengguna, serta rute menuju fasilitas. Analisis ini berbasis data titik fasilitas yang tersedia dan belum menggunakan data jumlah penduduk atau kapasitas layanan.</p></div>
-  <div class="card"><h3>6. Arsitektur sistem</h3><p>Frontend terdiri dari HTML, CSS, JavaScript, Leaflet, dan Chart.js. Backend menggunakan PHP API. Database menggunakan PostgreSQL/PostGIS. Data disediakan melalui API, sedangkan GeoJSON digunakan sebagai fallback agar peta tetap dapat diuji meskipun database belum tersambung.</p></div>
-</aside>
-</div></main>
-<section class="section soft"><div class="container-narrow"><div class="section-head"><h2>Ringkasan kesesuaian instruksi</h2><p>Bagian ini dapat digunakan untuk menjelaskan bahwa website sudah memenuhi poin tugas.</p></div><div class="grid-3"><div class="card"><h3>SDLC</h3><p>Menggunakan model Prototype dan dijelaskan melalui tahapan analisis kebutuhan sampai implementasi.</p></div><div class="card"><h3>User</h3><p>Tersedia pengguna umum, admin, dan operator. Admin perlu login untuk mengelola data.</p></div><div class="card"><h3>Database</h3><p>Data atribut dan geometri disimpan pada PostgreSQL/PostGIS serta dapat diakses melalui PHP API.</p></div></div></div></section>
-<footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoPlay Purworejo</b><br><small>Dokumentasi pengembangan sistem WebGIS.</small></div><div class="footer-links"><a href="docs/laporan_tahapan_sdlc.md">Versi Markdown</a><a href="database/schema_postgresql.sql">SQL Database</a><a href="README.md">README</a></div></div></footer><script src="assets/js/common.js"></script></body></html>
+
+  <nav class="site-nav">
+    <div class="container-wide nav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">✚</span><span>GeoHealth Purworejo<small>WebGIS Kesehatan</small></span></a>
+      <button class="mobile-toggle" id="mobileToggle" type="button">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" data-page="index">Beranda</a>
+        <a href="map.html" data-page="map">Peta</a>
+        <a href="data.html" data-page="data">Data</a>
+        <a href="laporan.html" data-page="laporan">SDLC</a>
+        <a href="admin.html" data-page="admin">Admin</a>
+      </div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+    </div>
+  </nav>
+
+  <header class="page-hero"><div class="container"><span class="kicker">Dokumentasi sistem</span><h1>SDLC, database, dan analisis.</h1><p>Bagian ini berisi uraian langsung untuk laporan pengembangan WebGIS fasilitas kesehatan.</p></div></header>
+  <main class="section">
+    <div class="container report">
+      <aside class="report-nav">
+        <a href="#tujuan">Tujuan sistem</a>
+        <a href="#sdlc">SDLC</a>
+        <a href="#user">Kelas user</a>
+        <a href="#database">Database</a>
+        <a href="#analisis">Analisis</a>
+        <a href="#pengujian">Pengujian</a>
+      </aside>
+      <div class="report-content">
+        <section class="card report-section" id="tujuan"><h2>Tujuan sistem</h2><p>GeoHealth Purworejo menyajikan data fasilitas kesehatan Kabupaten Purworejo dalam bentuk peta interaktif. Sistem memuat data rumah sakit, puskesmas, klinik, apotek, dan laboratorium. Informasi yang ditampilkan meliputi nama fasilitas, jenis fasilitas, alamat, kecamatan, layanan utama, status BPJS, jam operasional, kapasitas tempat tidur, jumlah dokter, jumlah tenaga kesehatan, serta koordinat lokasi.</p><p>Tujuan utama sistem adalah memudahkan pencarian fasilitas kesehatan, menampilkan sebaran fasilitas per wilayah, memperkirakan jangkauan layanan melalui radius, serta menyediakan halaman admin untuk pembaruan data.</p></section>
+        <section class="card report-section" id="sdlc"><h2>SDLC yang digunakan</h2><p>Model yang digunakan adalah <b>Prototype</b>. Model ini dipilih karena pengembangan WebGIS membutuhkan tampilan peta yang cepat diuji, mudah direvisi, dan dapat disesuaikan berdasarkan kebutuhan pengguna.</p><div class="sdlc-steps">
+          <div class="sdlc-step"><span class="num">1</span><div><h3>Perencanaan</h3><p>Kebutuhan sistem ditentukan dari tujuan WebGIS, yaitu menampilkan data fasilitas kesehatan, menyediakan pencarian lokasi, memberi ringkasan analisis, dan menyiapkan halaman pengelolaan data.</p></div></div>
+          <div class="sdlc-step"><span class="num">2</span><div><h3>Analisis</h3><p>Data yang dibutuhkan terdiri atas atribut fasilitas kesehatan dan koordinat spasial. Pengguna dibagi menjadi pengunjung, admin, dan operator. Analisis yang dipakai meliputi sebaran fasilitas, radius layanan, fasilitas terdekat, dan komposisi fasilitas per kecamatan.</p></div></div>
+          <div class="sdlc-step"><span class="num">3</span><div><h3>Desain</h3><p>Desain sistem terdiri atas halaman beranda, peta, katalog data, login, admin, dan dokumentasi SDLC. Desain database menggunakan PostgreSQL/PostGIS agar data titik fasilitas dapat disimpan sebagai geometri.</p></div></div>
+          <div class="sdlc-step"><span class="num">4</span><div><h3>Implementasi</h3><p>Frontend dibuat dengan HTML, CSS, JavaScript, Leaflet, MarkerCluster, dan Chart.js. Backend disiapkan dengan PHP API. Database menggunakan PostgreSQL/PostGIS dengan tabel fasilitas, jenis fasilitas, layanan, relasi layanan, kunjungan bulanan, wilayah, pengguna, dan log aktivitas.</p></div></div>
+          <div class="sdlc-step"><span class="num">5</span><div><h3>Pengujian</h3><p>Pengujian dilakukan pada login, filter peta, popup marker, ekspor CSV, radius layanan, fasilitas terdekat, tambah data, edit data, hapus data, serta koneksi database.</p></div></div>
+          <div class="sdlc-step"><span class="num">6</span><div><h3>Pemeliharaan</h3><p>Pemeliharaan dilakukan melalui pembaruan data fasilitas, validasi koordinat, pengecekan layanan aktif, penyesuaian tampilan, dan backup database.</p></div></div>
+        </div></section>
+        <section class="card report-section" id="user"><h2>Kelas user</h2><h3>Pengunjung</h3><p>Pengunjung dapat membuka peta, memakai pencarian, memfilter jenis fasilitas dan kecamatan, melihat popup atribut, menampilkan radius, melihat fasilitas terdekat, dan mengekspor data.</p><h3>Admin</h3><p>Admin dapat login, menambah data fasilitas, mengubah atribut, memperbaiki koordinat, menghapus data, dan mengelola informasi layanan.</p><h3>Operator</h3><p>Operator disiapkan sebagai role tambahan untuk validasi data lapangan sebelum data dipublikasikan.</p></section>
+        <section class="card report-section" id="database"><h2>Database geospasial</h2><p>Database menggunakan PostgreSQL dengan ekstensi PostGIS. Data fasilitas disimpan dalam tabel <b>fasilitas_kesehatan</b> dengan kolom geometri bertipe <b>Point, EPSG:4326</b>. Struktur ini mendukung pemanggilan data ke peta, pencarian berdasarkan atribut, dan analisis jarak.</p><div class="schema-grid">
+          <div class="schema-table"><b>jenis_fasilitas</b><code>kategori rumah sakit, puskesmas, klinik, apotek, laboratorium</code></div>
+          <div class="schema-table"><b>fasilitas_kesehatan</b><code>atribut utama, layanan, status, kapasitas, lat, lon, geom</code></div>
+          <div class="schema-table"><b>layanan_kesehatan</b><code>IGD, rawat jalan, rawat inap, KIA, imunisasi, farmasi, laboratorium</code></div>
+          <div class="schema-table"><b>fasilitas_layanan</b><code>relasi fasilitas dengan layanan yang tersedia</code></div>
+          <div class="schema-table"><b>kunjungan_bulanan</b><code>data jumlah kunjungan untuk grafik tren</code></div>
+          <div class="schema-table"><b>app_users dan activity_logs</b><code>akun pengguna dan catatan aktivitas admin</code></div>
+        </div></section>
+        <section class="card report-section" id="analisis"><h2>Analisis yang dipakai</h2><h3>Analisis sebaran fasilitas</h3><p>Analisis ini menghitung jumlah fasilitas berdasarkan jenis dan kecamatan. Hasilnya digunakan pada kartu statistik, grafik komposisi, dan ringkasan wilayah.</p><h3>Analisis radius layanan</h3><p>Radius 1 km, 3 km, dan 5 km digunakan untuk memperkirakan area jangkauan dari satu fasilitas. Sistem menghitung fasilitas lain yang berada di dalam radius tersebut.</p><h3>Analisis fasilitas terdekat</h3><p>Sistem menghitung jarak lurus dari titik pengguna atau pusat Purworejo menuju fasilitas kesehatan. Hasilnya diurutkan dari jarak paling dekat.</p><h3>Analisis atribut layanan</h3><p>Status BPJS, IGD 24 jam, rawat inap, ambulans, jumlah dokter, dan kapasitas tempat tidur digunakan untuk membedakan karakter layanan tiap fasilitas.</p></section>
+        <section class="card report-section" id="pengujian"><h2>Pengujian sistem</h2><p>Pengujian dilakukan menggunakan skenario sederhana. Filter jenis fasilitas harus mengubah marker dan grafik. Filter kecamatan harus membatasi data sesuai wilayah. Tombol radius harus menampilkan lingkaran jangkauan. Tombol fasilitas terdekat harus menghasilkan urutan jarak. Form admin harus dapat menambah, mengubah, dan menghapus data. File SQL harus dapat dijalankan di pgAdmin tanpa error geometri Z.</p></section>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><div><b>GeoHealth Purworejo</b><br><small>Dokumentasi SDLC WebGIS kesehatan.</small></div><div class="footer-links"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a href="data.html">Data</a></div></div></footer>
+  <script src="assets/js/common.js"></script>
+  <script>document.querySelector('[data-page="laporan"]').classList.add('active')</script>
+</body>
+</html>

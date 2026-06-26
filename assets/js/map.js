@@ -1,181 +1,142 @@
-let map, markerCluster, boundaryLayer, facilities = [], activeTypes = new Set();
-let selectedBuffer = null, routeControl = null, userMarker = null, currentUserLatLng = null, typeChart = null;
 
-function initMap(){
-  const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'});
-  const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'© OpenStreetMap © CARTO'});
-  const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles © Esri'});
-  map = L.map('map',{zoomControl:false,layers:[carto]}).setView([-7.72,110.02],11);
-  L.control.zoom({position:'topright'}).addTo(map);
-  L.control.scale({metric:true,imperial:false,position:'bottomleft'}).addTo(map);
-  L.control.layers({'Toy Light':carto,'OpenStreetMap':osm,'Satelit':esri}, {}, {position:'topright',collapsed:true}).addTo(map);
-}
+let map, cluster, allRows = [], filteredRows = [], selectedFacility = null, radiusLayer = null, userMarker = null, routeLayer = null, typeChart = null;
+const purworejoCenter = [-7.713, 110.009];
+const mapState = { basemap: null };
+const basemaps = {
+  osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'}),
+  topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {maxZoom:17, attribution:'© OpenTopoMap'}),
+  light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {maxZoom:19, attribution:'© CARTO'})
+};
 
-function normalizeFeature(feature, idx){
-  const p = getProps(feature), ll = getLatLng(feature) || {lat:p.latitude,lng:p.longitude};
-  return {
-    id:p.id || p.gid || idx+1,
-    nama:p.nama_faskes || p.nama || 'Tanpa nama',
-    jenis:p.jenis_faskes || p.jenis || 'Lainnya',
-    kecamatan:p.kecamatan || '-',
-    alamat:p.alamat || '-',
-    latitude:Number(p.latitude ?? ll?.lat),
-    longitude:Number(p.longitude ?? ll?.lng),
-    sumber_data:p.sumber_data || '-',
-    catatan:p.catatan || '-',
-    raw:feature
-  };
+document.addEventListener('DOMContentLoaded', initMapPage);
+async function initMapPage(){
+  allRows = await loadFacilities();
+  filteredRows = [...allRows];
+  map = L.map('map', { zoomControl:false }).setView(purworejoCenter, 11);
+  basemaps.osm.addTo(map); mapState.basemap = basemaps.osm;
+  L.control.zoom({position:'bottomright'}).addTo(map);
+  L.control.layers({'OpenStreetMap':basemaps.osm,'Topografi':basemaps.topo,'Light':basemaps.light}).addTo(map);
+  cluster = L.markerClusterGroup({showCoverageOnHover:false, maxClusterRadius:52});
+  map.addLayer(cluster);
+  fillFilters(); buildLegend(); bindEvents(); applyFilters();
 }
-function validCoord(f){return Number.isFinite(f.latitude) && Number.isFinite(f.longitude)}
-function filtered(){
-  const keyword = qs('#searchText').value.trim().toLowerCase();
-  const kec = qs('#kecFilter').value;
-  return facilities.filter(f => activeTypes.has(f.jenis) && (!kec || f.kecamatan===kec) && (!keyword || [f.nama,f.jenis,f.kecamatan,f.alamat].join(' ').toLowerCase().includes(keyword)));
+function fillFilters(){
+  const types = uniqueValues(allRows,'jenis');
+  const districts = uniqueValues(allRows,'kecamatan');
+  byId('typeFilter').innerHTML = '<option value="">Semua</option>' + types.map(t=>`<option>${t}</option>`).join('');
+  byId('districtFilter').innerHTML = '<option value="">Semua</option>' + districts.map(d=>`<option>${d}</option>`).join('');
 }
-function iconFor(type){
-  const color = getTypeColor(type);
-  return L.divIcon({className:'toy-marker', html:`<span></span>`, iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-30], bgPos:[0,0], iconUrl:null, shadowUrl:null, style:`background:${color}`});
+function buildLegend(){
+  const types = uniqueValues(allRows,'jenis');
+  byId('legend').innerHTML = '<b>Legenda</b>' + types.map(t => `<div class="legend-row"><span class="marker-dot" style="background:${typeColor(t)}"></span>${t}</div>`).join('');
 }
-function makeToyIcon(type){
-  const color = getTypeColor(type);
-  return L.divIcon({className:'', html:`<div class="toy-marker" style="background:${color}"><span></span></div>`, iconSize:[30,30], iconAnchor:[15,30], popupAnchor:[0,-28]});
+function markerIcon(row){
+  return L.divIcon({className:'', html:`<div class="custom-marker" style="background:${typeColor(row.jenis)}">${typeIcon(row.jenis)}</div>`, iconSize:[34,34], iconAnchor:[17,17], popupAnchor:[0,-18]});
 }
-function renderFilters(){
-  const types = [...new Set(facilities.map(f=>f.jenis))].sort();
-  activeTypes = new Set(types);
-  qs('#typeFilters').innerHTML = types.map(t => {
-    const id = `type_${t.replace(/\W/g,'_')}`;
-    return `<div class="filter-row"><input type="checkbox" id="${id}" value="${escapeHTML(t)}" checked><label for="${id}"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${getTypeColor(t)};margin-right:8px;border:2px solid #fff;box-shadow:0 0 0 1px #c8d8eb"></span>${escapeHTML(t)}</label></div>`;
-  }).join('');
-  qsa('#typeFilters input').forEach(inp => inp.addEventListener('change', () => {inp.checked ? activeTypes.add(inp.value) : activeTypes.delete(inp.value); renderAll();}));
-  const kecs = [...new Set(facilities.map(f=>f.kecamatan).filter(Boolean))].sort();
-  qs('#kecFilter').innerHTML = '<option value="">Semua kecamatan</option>' + kecs.map(k=>`<option value="${escapeHTML(k)}">${escapeHTML(k)}</option>`).join('');
-}
-function popupHTML(f){
-  const gm = `https://www.google.com/maps/search/?api=1&query=${f.latitude},${f.longitude}`;
-  const radius = Number(qs('#radiusSelect')?.value || 3000);
-  return `<div class="popup-title">${escapeHTML(f.nama)}</div><div class="popup-meta">${escapeHTML(f.jenis)} • ${escapeHTML(f.kecamatan)}</div><div><b>Alamat:</b><br>${escapeHTML(f.alamat)}</div><div style="margin-top:6px"><b>Sumber:</b> ${escapeHTML(f.sumber_data)}</div><div class="popup-actions"><button type="button" onclick='setDestination(${f.latitude},${f.longitude},${JSON.stringify(f.nama)})'>Rute</button><button type="button" onclick='makeBuffer(${f.latitude},${f.longitude},${radius},${JSON.stringify(f.nama)})'>Buffer ${(radius/1000).toFixed(0)} km</button><a target="_blank" href="${gm}">Google Maps</a></div>`;
+function popupHtml(row){
+  const tags = [row.bpjs?'BPJS':'Non-BPJS', row.igd?'IGD 24 Jam':null, row.rawat_inap?'Rawat Inap':null, row.ambulans?'Ambulans':null].filter(Boolean);
+  return `<div class="facility-popup"><h3>${row.nama}</h3><p><b>${row.jenis}</b> • ${row.kecamatan}</p><p>${row.alamat}</p><p>Jam: ${row.jam || '-'}</p><p>Tenaga: ${row.tenaga || 0} • Dokter: ${row.dokter || 0} • Bed: ${row.bed || 0}</p><div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div><div class="toolbar" style="margin-top:10px"><button class="btn btn-blue btn-sm route-action" type="button" data-id="${row.id}">Garis rute</button><button class="btn btn-light btn-sm radius-action" type="button" data-id="${row.id}">Radius</button></div></div>`;
 }
 function renderMarkers(){
-  if(markerCluster) map.removeLayer(markerCluster);
-  markerCluster = L.markerClusterGroup({showCoverageOnHover:false, maxClusterRadius:48});
-  filtered().forEach(f => {
-    if(!validCoord(f)) return;
-    const m = L.marker([f.latitude,f.longitude], {icon:makeToyIcon(f.jenis), title:f.nama}).bindPopup(popupHTML(f));
-    m.on('click', () => updateAnalysis(`Fasilitas dipilih: ${f.nama}. Jenis layanan ${f.jenis}, berada di Kecamatan ${f.kecamatan}. Gunakan tombol buffer atau rute untuk analisis lanjutan.`));
-    markerCluster.addLayer(m);
+  cluster.clearLayers();
+  filteredRows.forEach(row => {
+    const marker = L.marker([row.lat,row.lng], {icon:markerIcon(row)}).bindPopup(popupHtml(row));
+    marker.on('click', () => { selectedFacility = row; });
+    cluster.addLayer(marker);
   });
-  markerCluster.addTo(map);
+  if(filteredRows.length){
+    const bounds = L.latLngBounds(filteredRows.map(r=>[r.lat,r.lng]));
+    map.fitBounds(bounds.pad(.18));
+  }
 }
-function renderList(){
-  const rows = filtered();
-  qs('#facilityList').innerHTML = rows.slice(0,100).map(f=>`<div class="facility-card" data-id="${escapeHTML(f.id)}"><b>${escapeHTML(f.nama)}</b><span>${escapeHTML(f.kecamatan)} • ${escapeHTML(f.alamat)}</span><em class="badge-type" style="background:${getTypeColor(f.jenis)};color:${getTypeText(f.jenis)}">${escapeHTML(f.jenis)}</em></div>`).join('') || '<p class="mini-text">Data tidak ditemukan.</p>';
-  qsa('.facility-card').forEach(card => card.addEventListener('click', () => {
-    const f = facilities.find(x=>String(x.id)===String(card.dataset.id));
-    if(f && validCoord(f)){map.setView([f.latitude,f.longitude],16); updateAnalysis(`Peta diarahkan ke ${f.nama}. Klik marker untuk membuka atribut lengkap dan analisis radius.`)}
-  }));
+function applyFilters(){
+  const q = (byId('searchInput').value || byId('mapSearch').value || '').toLowerCase().trim();
+  const type = byId('typeFilter').value;
+  const district = byId('districtFilter').value;
+  const bpjs = byId('bpjsFilter').value;
+  const igd = byId('igdFilter').value;
+  filteredRows = allRows.filter(r => {
+    const hay = [r.nama,r.jenis,r.kecamatan,r.desa,r.alamat,r.kode].join(' ').toLowerCase();
+    return (!q || hay.includes(q)) && (!type || r.jenis===type) && (!district || r.kecamatan===district) && (bpjs==='' || String(Number(!!r.bpjs))===bpjs) && (igd==='' || String(Number(!!r.igd))===igd);
+  });
+  renderMarkers(); updateKpi(); updateChart(); updateAnalysis();
 }
-function updateStats(){
-  const rows=filtered();
-  qs('#statTotal').textContent=formatNum(facilities.length);
-  qs('#statVisible').textContent=formatNum(rows.length);
-  qs('#statKec').textContent=formatNum(new Set(facilities.map(f=>f.kecamatan)).size);
-  updateInsight(rows);
-  updateChart(rows);
+function updateKpi(){
+  byId('kpiTotal').textContent = fmtNumber(filteredRows.length);
+  byId('kpiBpjs').textContent = fmtNumber(filteredRows.filter(r=>r.bpjs).length);
+  byId('kpiIgd').textContent = fmtNumber(filteredRows.filter(r=>r.igd).length);
+  byId('kpiKecamatan').textContent = fmtNumber(uniqueValues(filteredRows,'kecamatan').length);
 }
-function updateInsight(rows){
-  const byType = countBy(rows,'jenis');
-  const byKec = countBy(rows,'kecamatan');
-  const [domType, domCount] = topEntry(byType);
-  const [topK, topCount] = topEntry(byKec);
-  const [lowK, lowCount] = topEntry(byKec,true);
-  qs('#dominantType').textContent = domType === '-' ? '—' : `${domType} (${domCount})`;
-  qs('#topKec').textContent = topK === '-' ? '—' : `${topK} (${topCount})`;
-  qs('#lowKec').textContent = lowK === '-' ? '—' : `${lowK} (${lowCount})`;
-}
-function updateChart(rows){
-  const counts = countBy(rows,'jenis');
-  const labels = Object.keys(counts); const data = Object.values(counts);
+function updateChart(){
+  const types = uniqueValues(allRows,'jenis');
+  const counts = types.map(t => filteredRows.filter(r=>r.jenis===t).length);
+  const colors = types.map(typeColor);
   if(typeChart) typeChart.destroy();
-  typeChart = new Chart(qs('#typeChart'), {
-    type:'doughnut',
-    data:{labels, datasets:[{label:'Jumlah', data, backgroundColor:labels.map(getTypeColor), borderColor:'#ffffff', borderWidth:4}]},
-    options:{responsive:true, maintainAspectRatio:false, cutout:'58%', plugins:{legend:{position:'bottom', labels:{boxWidth:12, font:{family:'Nunito', weight:'800'}}}}}
+  const ctx = byId('typeChart');
+  typeChart = new Chart(ctx, {type:'doughnut', data:{labels:types, datasets:[{data:counts, backgroundColor:colors, borderWidth:3, borderColor:'#fff'}]}, options:{plugins:{legend:{position:'bottom'}}, cutout:'62%'}});
+}
+function updateAnalysis(){
+  const counts = {};
+  filteredRows.forEach(r => counts[r.kecamatan] = (counts[r.kecamatan] || 0) + 1);
+  const ranked = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const top = ranked[0] || ['-',0];
+  const low = ranked[ranked.length-1] || ['-',0];
+  const hospital = filteredRows.filter(r=>r.jenis==='Rumah Sakit').length;
+  const puskesmas = filteredRows.filter(r=>r.jenis==='Puskesmas').length;
+  byId('analysisBox').innerHTML = `<b>Ringkasan hasil filter</b><p>Kecamatan dengan fasilitas terbanyak: <b>${top[0]}</b> (${top[1]} titik). Kecamatan dengan jumlah paling sedikit dalam hasil filter: <b>${low[0]}</b> (${low[1]} titik). Rumah sakit tampil: <b>${hospital}</b>. Puskesmas tampil: <b>${puskesmas}</b>.</p>`;
+}
+function bindEvents(){
+  ['searchInput','mapSearch','typeFilter','districtFilter','bpjsFilter','igdFilter'].forEach(id => byId(id).addEventListener('input', () => {
+    if(id === 'searchInput') byId('mapSearch').value = byId('searchInput').value;
+    if(id === 'mapSearch') byId('searchInput').value = byId('mapSearch').value;
+    applyFilters();
+  }));
+  byId('btnFit').addEventListener('click', () => { if(filteredRows.length) map.fitBounds(L.latLngBounds(filteredRows.map(r=>[r.lat,r.lng])).pad(.18)); });
+  byId('btnReset').addEventListener('click', () => { ['searchInput','mapSearch','typeFilter','districtFilter','bpjsFilter','igdFilter'].forEach(id=>byId(id).value=''); clearRadius(); if(routeLayer) map.removeLayer(routeLayer); applyFilters(); });
+  byId('btnPrint').addEventListener('click', () => window.print());
+  byId('btnExport').addEventListener('click', () => downloadText('fasilitas_kesehatan_purworejo.csv', toCsv(filteredRows)));
+  byId('btnRadius').addEventListener('click', showRadius);
+  byId('btnClearRadius').addEventListener('click', clearRadius);
+  byId('btnNearest').addEventListener('click', findNearest);
+  byId('btnLocate').addEventListener('click', locateUser);
+  document.addEventListener('click', e => {
+    const routeBtn = e.target.closest('.route-action');
+    const radBtn = e.target.closest('.radius-action');
+    if(routeBtn){ selectedFacility = allRows.find(r=>String(r.id)===routeBtn.dataset.id); drawRouteTo(selectedFacility); }
+    if(radBtn){ selectedFacility = allRows.find(r=>String(r.id)===radBtn.dataset.id); showRadius(); }
   });
 }
-function updateAnalysis(text){qs('#analysisText').textContent=text; qs('#analysisDock').classList.remove('hidden')}
-function renderAll(){renderMarkers(); renderList(); updateStats()}
-function distanceMeter(a,b){return map.distance([a.lat,a.lng],[b.lat,b.lng])}
-function radiusValue(){return Number(qs('#radiusSelect').value || 3000)}
-window.makeBuffer = function(lat,lng,radius,name){
-  radius = Number(radius || radiusValue());
-  if(selectedBuffer) map.removeLayer(selectedBuffer);
-  selectedBuffer = L.circle([lat,lng], {radius, color:'#1f6fd6', fillColor:'#ffd23f', fillOpacity:.23, weight:3, dashArray:'9 7'}).addTo(map);
-  map.fitBounds(selectedBuffer.getBounds(), {padding:[30,30]});
-  const rows = facilities.filter(f => validCoord(f) && distanceMeter({lat,lng},{lat:f.latitude,lng:f.longitude}) <= radius);
-  const byType = countBy(rows,'jenis');
-  const typeSummary = Object.entries(byType).map(([k,v])=>`${k}: ${v}`).join(', ') || 'tidak ada';
-  qs('#bufferCount').textContent = `${rows.length} titik`;
-  updateAnalysis(`Buffer radius ${(radius/1000).toFixed(0)} km dari ${name}. Terdapat ${rows.length} fasilitas dalam radius tersebut. Komposisi: ${typeSummary}. Analisis ini berbasis jumlah titik fasilitas, belum memakai data jumlah penduduk.`);
+function clearRadius(){ if(radiusLayer){ map.removeLayer(radiusLayer); radiusLayer = null; } }
+function showRadius(){
+  if(!selectedFacility){ selectedFacility = filteredRows[0]; }
+  if(!selectedFacility){ showToast('Tidak ada fasilitas pada hasil filter.'); return; }
+  clearRadius();
+  const radius = Number(byId('radiusSelect').value);
+  radiusLayer = L.circle([selectedFacility.lat,selectedFacility.lng], {radius, color:typeColor(selectedFacility.jenis), weight:3, fillColor:typeColor(selectedFacility.jenis), fillOpacity:.14}).addTo(map);
+  const inside = allRows.filter(r => distanceKm(selectedFacility.lat, selectedFacility.lng, r.lat, r.lng) <= radius/1000);
+  map.fitBounds(radiusLayer.getBounds().pad(.2));
+  byId('analysisBox').innerHTML = `<b>Radius ${radius/1000} km dari ${selectedFacility.nama}</b><p>Jumlah fasilitas dalam radius: <b>${inside.length}</b> titik. Komposisi: ${uniqueValues(inside,'jenis').map(t=>`${t} ${inside.filter(r=>r.jenis===t).length}`).join(', ')}.</p>`;
 }
-window.setDestination = function(lat,lng,name){
-  if(!currentUserLatLng){updateAnalysis('Lokasi awal belum tersedia. Klik “Lokasi saya” terlebih dahulu, lalu izinkan akses lokasi pada browser.'); return;}
-  if(routeControl) map.removeControl(routeControl);
-  routeControl = L.Routing.control({waypoints:[L.latLng(currentUserLatLng.lat,currentUserLatLng.lng), L.latLng(lat,lng)], routeWhileDragging:false, show:false, addWaypoints:false, lineOptions:{styles:[{color:'#e63946',weight:6,opacity:.85}]} }).addTo(map);
-  updateAnalysis(`Rute dibuat dari posisi pengguna menuju ${name}. Jarak dan waktu mengikuti layanan routing yang tersedia.`);
-}
-function locateUser(callback){
-  if(!navigator.geolocation){updateAnalysis('Browser tidak mendukung fitur lokasi.'); return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    currentUserLatLng = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+function locateUser(){
+  if(!navigator.geolocation){ showToast('Geolokasi tidak tersedia.'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const latlng = [pos.coords.latitude, pos.coords.longitude];
     if(userMarker) map.removeLayer(userMarker);
-    userMarker = L.marker([currentUserLatLng.lat,currentUserLatLng.lng]).addTo(map).bindPopup('Lokasi saya');
-    map.setView([currentUserLatLng.lat,currentUserLatLng.lng],14);
-    updateAnalysis('Lokasi pengguna berhasil diambil. Posisi ini dapat digunakan sebagai titik awal rute dan pencarian fasilitas terdekat.');
-    if(callback) callback(currentUserLatLng);
-  }, () => updateAnalysis('Lokasi pengguna tidak dapat diambil. Pastikan izin lokasi browser sudah diaktifkan.'), {enableHighAccuracy:true,timeout:12000});
+    userMarker = L.marker(latlng).addTo(map).bindPopup('Lokasi pengguna').openPopup();
+    map.setView(latlng, 14);
+  }, () => showToast('Izin lokasi ditolak. Fasilitas terdekat memakai titik pusat Purworejo.'));
 }
-function nearestFacility(){
-  locateUser(user=>{
-    let rows=filtered().filter(validCoord);
-    let nearest = rows.map(f=>({...f, dist:distanceMeter(user,{lat:f.latitude,lng:f.longitude})})).sort((a,b)=>a.dist-b.dist)[0];
-    if(nearest){map.setView([nearest.latitude,nearest.longitude],15); updateAnalysis(`Fasilitas terdekat dari posisi Anda adalah ${nearest.nama}, jenis ${nearest.jenis}, dengan estimasi jarak lurus ${(nearest.dist/1000).toFixed(2)} km. Klik marker untuk membuat rute.`)}
-  });
+function findNearest(){
+  const usePoint = userMarker ? userMarker.getLatLng() : L.latLng(purworejoCenter[0], purworejoCenter[1]);
+  const ranked = allRows.map(r => ({...r, jarak: distanceKm(usePoint.lat, usePoint.lng, r.lat, r.lng)})).sort((a,b)=>a.jarak-b.jarak).slice(0,5);
+  byId('analysisBox').innerHTML = `<b>Fasilitas terdekat</b><p>Titik acuan: ${userMarker ? 'lokasi pengguna' : 'pusat Purworejo'}. ${ranked.map((r,i)=>`${i+1}. ${r.nama} (${r.jarak.toFixed(2)} km)`).join(' • ')}</p>`;
+  if(ranked[0]){ selectedFacility = ranked[0]; drawRouteTo(ranked[0], usePoint); }
 }
-function clearAnalysis(){
-  if(selectedBuffer){map.removeLayer(selectedBuffer); selectedBuffer=null;}
-  if(routeControl){map.removeControl(routeControl); routeControl=null;}
-  qs('#bufferCount').textContent = '—';
-  updateAnalysis('Analisis dihapus. Gunakan filter, klik marker, atau cari fasilitas terdekat untuk menampilkan hasil baru.');
+function drawRouteTo(row, fromPoint){
+  const from = fromPoint || (userMarker ? userMarker.getLatLng() : L.latLng(purworejoCenter[0], purworejoCenter[1]));
+  if(routeLayer) map.removeLayer(routeLayer);
+  routeLayer = L.polyline([[from.lat,from.lng],[row.lat,row.lng]], {color:typeColor(row.jenis), weight:5, dashArray:'9 8'}).addTo(map);
+  map.fitBounds(routeLayer.getBounds().pad(.28));
+  const km = distanceKm(from.lat, from.lng, row.lat, row.lng).toFixed(2);
+  byId('analysisBox').innerHTML = `<b>Garis rute menuju ${row.nama}</b><p>Jarak lurus sekitar <b>${km} km</b>. Untuk navigasi jalan, buka lokasi melalui aplikasi peta dari popup fasilitas.</p>`;
 }
-function addLegend(){
-  const legendControl = L.control({position:'bottomright'});
-  legendControl.onAdd = function(){
-    const div=L.DomUtil.create('div','legend');
-    div.innerHTML='<b>Legenda</b><br>' + Object.entries(TYPE_COLOR).filter(([t])=>t!=='Lainnya').map(([t,c])=>`<i style="background:${c}"></i>${t}`).join('<br>') + '<br><span style="border:2px dashed #1f6fd6;background:#ffd23f;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Buffer radius<br><span style="border:2px solid #1f6fd6;width:14px;height:9px;display:inline-block;margin-right:6px"></span>Batas wilayah';
-    return div;
-  };
-  legendControl.addTo(map);
-}
-async function main(){
-  initMap();
-  const [facRes, boundRes] = await Promise.all([loadFacilities(), loadBoundary()]);
-  facilities = facRes.data.features.map(normalizeFeature).filter(validCoord);
-  qs('#statSource').textContent = facRes.source === 'database' ? 'DB' : 'GeoJSON';
-  qs('#systemNote').textContent = facRes.source === 'database' ? 'Data dimuat dari PostgreSQL/PostGIS melalui API PHP.' : 'API database belum aktif. Data dimuat dari GeoJSON statis sebagai fallback.';
-  boundaryLayer = L.geoJSON(boundRes.data,{style:{color:'#1f6fd6',weight:3,fillColor:'#ffd23f',fillOpacity:.14,dashArray:'8 5'}}).addTo(map);
-  try{map.fitBounds(boundaryLayer.getBounds(),{padding:[20,20]})}catch(e){}
-  renderFilters(); renderAll(); addLegend();
-}
-document.addEventListener('DOMContentLoaded', () => {
-  main().catch(err=>{console.error(err); qs('#systemNote').textContent='Gagal memuat data. Pastikan file dijalankan melalui server lokal.'});
-  qs('#togglePanel').addEventListener('click',()=>qs('#mapSidebar').classList.toggle('closed'));
-  qs('#searchText').addEventListener('input',renderAll); qs('#kecFilter').addEventListener('change',renderAll);
-  qs('#radiusSelect').addEventListener('change',()=>{qs('#radiusBadge').textContent=`${Number(qs('#radiusSelect').value)/1000} km`; updateAnalysis(`Radius buffer diubah menjadi ${Number(qs('#radiusSelect').value)/1000} km. Klik marker lalu pilih tombol buffer untuk menjalankan analisis.`)});
-  qs('#resetFilter').addEventListener('click',()=>{qs('#searchText').value=''; qs('#kecFilter').value=''; activeTypes=new Set([...new Set(facilities.map(f=>f.jenis))]); qsa('#typeFilters input').forEach(i=>i.checked=true); renderAll();});
-  qs('#zoomAll').addEventListener('click',()=>{if(markerCluster && markerCluster.getLayers().length) map.fitBounds(markerCluster.getBounds(),{padding:[40,40]})});
-  qs('#locateMe').addEventListener('click',()=>locateUser()); qs('#nearestBtn').addEventListener('click',nearestFacility);
-  qs('#clearAnalysis').addEventListener('click',clearAnalysis);
-  qs('#btnExportCsv').addEventListener('click',()=>download('fasilitas_kesehatan_purworejo.csv', toCSV(filtered().map(f=>({nama_faskes:f.nama,jenis_faskes:f.jenis,kecamatan:f.kecamatan,alamat:f.alamat,latitude:f.latitude,longitude:f.longitude,sumber_data:f.sumber_data,catatan:f.catatan}))), 'text/csv'));
-  qs('#btnPrint').addEventListener('click',()=>window.print()); qs('#hideDock').addEventListener('click',()=>qs('#analysisDock').classList.add('hidden'));
-});

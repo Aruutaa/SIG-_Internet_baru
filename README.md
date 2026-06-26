@@ -1,65 +1,84 @@
-# GeoPlay Purworejo — Fullstack WebGIS Fasilitas Kesehatan
+# GeoHealth Purworejo - Fullstack WebGIS Kesehatan
 
-Versi ini adalah upgrade tampilan dan fitur dari WebGIS sebelumnya. Tema warna dibuat dengan nuansa Toy Story: biru, kuning, merah, hijau, dan putih. Sistem tetap menggunakan struktur fullstack sederhana: frontend HTML/CSS/JavaScript, backend PHP API, dan database PostgreSQL/PostGIS.
+Paket ini berisi WebGIS fasilitas kesehatan Kabupaten Purworejo dengan tampilan Toy Story color system dan pola katalog data yang menampilkan kategori, pencarian, sortir, kartu data, peta interaktif, dashboard admin, serta dokumentasi SDLC.
 
-## Tujuan Sistem
+## Struktur halaman
 
-1. Menginventarisasi data fasilitas kesehatan berdasarkan nama, jenis, kecamatan, alamat, sumber data, dan koordinat.
-2. Memvisualisasikan sebaran fasilitas kesehatan pada peta interaktif.
-3. Membantu pengguna melakukan pencarian lokasi, filter data, pencarian fasilitas terdekat, rute, dan analisis radius layanan.
-4. Menyediakan dashboard admin untuk mengelola data spasial yang tersimpan dalam database.
-
-## Analisis yang Digunakan
-
-Analisis disesuaikan dengan tujuan sistem, yaitu:
-
-- Analisis jumlah fasilitas per jenis.
-- Analisis jumlah fasilitas per kecamatan.
-- Analisis kecamatan dengan data terbanyak dan paling sedikit.
-- Analisis buffer radius 1 km, 3 km, dan 5 km dari fasilitas terpilih.
-- Analisis fasilitas terdekat dari posisi pengguna.
-- Analisis rute menuju fasilitas.
-
-Catatan: analisis masih berbasis jumlah titik fasilitas. Sistem belum menggunakan data jumlah penduduk, daya tampung layanan, atau waktu tempuh riil karena data tersebut belum tersedia.
-
-## Struktur Halaman
-
-- `index.html` — landing page dengan tema Toy Story dan ringkasan tujuan sistem.
-- `map.html` — peta interaktif, filter, grafik, buffer radius, fasilitas terdekat, rute, dan ekspor CSV.
-- `data.html` — katalog data dan interpretasi sebaran.
-- `login.html` — halaman login admin.
-- `admin.html` — dashboard admin untuk tambah, edit, dan hapus data.
-- `laporan.html` — penjelasan SDLC, jenis user, database, dan analisis.
+- `index.html` : beranda dan ringkasan tujuan sistem.
+- `map.html` : peta interaktif, filter, popup, radius, fasilitas terdekat, grafik, ekspor CSV, dan cetak peta.
+- `data.html` : katalog data dengan kategori, pencarian, sortir, dan kartu fasilitas.
+- `login.html` : halaman login admin.
+- `admin.html` : dashboard kelola data fasilitas kesehatan.
+- `laporan.html` : uraian SDLC, kelas user, database, analisis, dan pengujian.
 
 ## Database
 
-File SQL utama:
+File database utama:
 
-```text
-/database/schema_postgresql.sql
-```
+`database/schema_postgresql.sql`
 
-Import melalui pgAdmin Query Tool, bukan Restore.
+Jalankan melalui pgAdmin:
 
-## Akun Admin Awal
+1. Buat database baru, misalnya `geohealth_purworejo`.
+2. Buka database tersebut.
+3. Pilih `Tools > Query Tool`.
+4. Buka file `database/schema_postgresql.sql`.
+5. Klik `Execute` atau tekan `F5`.
 
-```text
-Email: admin@webgis.local
-Password: admin123
-```
+Tabel utama:
 
-## Menjalankan Website
+- `app_users`
+- `jenis_fasilitas`
+- `layanan_kesehatan`
+- `wilayah_administrasi`
+- `fasilitas_kesehatan`
+- `fasilitas_layanan`
+- `kunjungan_bulanan`
+- `activity_logs`
 
-Dari folder project, jalankan:
+View dan fungsi analisis:
+
+- `v_fasilitas_geojson`
+- `v_ringkasan_jenis`
+- `v_ringkasan_kecamatan`
+- `f_fasilitas_terdekat(lon, lat, limit)`
+- `f_radius_layanan(fasilitas_id, radius_meter)`
+
+## Menjalankan web
+
+Dari folder project:
 
 ```bash
 php -S localhost:8000
 ```
 
-Kemudian buka:
+Buka:
 
 ```text
 http://localhost:8000/index.html
 ```
 
-Jika database/API belum aktif, website tetap dapat menampilkan data dari GeoJSON fallback. Namun, fitur simpan permanen di admin membutuhkan PostgreSQL/PostGIS dan koneksi API yang benar.
+## Koneksi database
+
+Edit file:
+
+`api/config.php`
+
+Sesuaikan:
+
+```php
+$DB_NAME = 'geohealth_purworejo';
+$DB_USER = 'postgres';
+$DB_PASS = 'postgres123';
+```
+
+## Akun awal
+
+```text
+Email    : admin@webgis.local
+Password : admin123
+```
+
+## Catatan data
+
+Data awal disiapkan untuk kebutuhan pengujian sistem. Koordinat dan atribut dapat diganti dengan hasil survei atau sumber resmi sebelum digunakan sebagai data final.

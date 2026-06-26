@@ -1,19 +1,48 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Katalog Data | GeoPlay Purworejo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900;1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
+  <title>Katalog Data | GeoHealth Purworejo</title>
 </head>
 <body>
-<nav class="site-nav"><div class="container-narrow nav-inner"><a class="brand" href="index.html"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoPlay Purworejo<small>Katalog Data</small></span></a><button class="mobile-toggle" id="mobileToggle" type="button">☰</button><div class="nav-links" id="navLinks"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a class="active" href="data.html">Data</a><a href="laporan.html">Laporan</a><a href="login.html">Admin</a></div><div class="nav-actions"><a class="btn btn-primary" href="map.html">Buka Peta</a></div></div></nav>
-<header class="page-hero"><div class="container-narrow"><span class="pill">Katalog Data</span><h1>Data fasilitas kesehatan dan ringkasan analisisnya.</h1><p>Halaman ini menampilkan atribut layer fasilitas kesehatan, ringkasan jumlah data, jenis fasilitas dominan, serta kecamatan dengan data terbanyak dan paling sedikit.</p></div></header>
-<main class="section"><div class="container-narrow">
-  <div class="grid-4" style="margin-bottom:18px"><div class="card"><h3>Total fasilitas</h3><p style="font-size:2rem;font-weight:1000;color:#1f6fd6" id="dtTotal">0</p></div><div class="card"><h3>Jumlah kecamatan</h3><p style="font-size:2rem;font-weight:1000;color:#1f6fd6" id="dtKec">0</p></div><div class="card"><h3>Jenis dominan</h3><p style="font-size:1.45rem;font-weight:1000;color:#e63946" id="dtDominant">—</p></div><div class="card"><h3>Sumber aktif</h3><p style="font-size:1.45rem;font-weight:1000;color:#2fb344" id="dtSource">—</p></div></div>
-  <div class="grid-2" style="margin-bottom:18px"><div class="card analysis-card"><h3>Interpretasi singkat</h3><p id="dtInterpretation">Memuat analisis data...</p></div><div class="card analysis-card"><h3>Tujuan analisis</h3><p>Analisis dibuat untuk membaca sebaran fasilitas, mendukung pencarian lokasi, dan membantu admin memeriksa kecamatan yang perlu dilengkapi datanya.</p></div></div>
-  <div class="card" style="margin-bottom:18px"><div class="form-grid"><div class="form-group"><label>Cari data</label><input class="input" id="dtSearch" placeholder="Cari nama, jenis, kecamatan, alamat"></div><div class="form-group"><label>Filter jenis fasilitas</label><select class="select" id="dtType"><option value="">Semua jenis</option></select></div></div><div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-soft" id="dtExport" type="button">Ekspor CSV</button><a class="btn btn-primary" href="map.html">Lihat di Peta</a></div></div>
-  <div class="table-wrap"><table class="data-table"><thead><tr><th>No</th><th>Nama Fasilitas</th><th>Jenis</th><th>Kecamatan</th><th>Alamat</th><th>Koordinat</th><th>Sumber</th></tr></thead><tbody id="dtBody"><tr><td colspan="7">Memuat data...</td></tr></tbody></table></div>
-</div></main>
-<footer class="site-footer"><div class="container-narrow footer-inner"><div><b>GeoPlay Purworejo</b><br><small>Katalog data fasilitas kesehatan.</small></div><div class="footer-links"><a href="index.html">Beranda</a><a href="map.html">Peta</a><a href="login.html">Admin</a></div></div></footer><script src="assets/js/common.js"></script><script src="assets/js/data.js"></script></body></html>
+
+  <nav class="site-nav">
+    <div class="container-wide nav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">✚</span><span>GeoHealth Purworejo<small>WebGIS Kesehatan</small></span></a>
+      <button class="mobile-toggle" id="mobileToggle" type="button">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html" data-page="index">Beranda</a>
+        <a href="map.html" data-page="map">Peta</a>
+        <a href="data.html" data-page="data">Data</a>
+        <a href="laporan.html" data-page="laporan">SDLC</a>
+        <a href="admin.html" data-page="admin">Admin</a>
+      </div>
+      <div class="nav-actions"><a class="btn btn-light" href="login.html">Login</a><a class="btn btn-primary" href="map.html">Buka Peta</a></div>
+    </div>
+  </nav>
+
+  <header class="page-hero"><div class="container"><span class="kicker">Katalog fasilitas</span><h1>Data fasilitas kesehatan.</h1><p>Format halaman mengikuti pola katalog publikasi: kategori, pencarian, sortir, kartu data, dan informasi ringkas setiap fasilitas.</p></div></header>
+  <main class="section">
+    <div class="container">
+      <div class="category-row" id="categoryRow"></div>
+      <div class="toolbar" style="margin:12px 0 28px">
+        <label class="control" style="min-width:180px"><span>Sortir</span><select class="select" id="sortSelect"><option value="newest">Terbaru</option><option value="name">Nama A-Z</option><option value="rating">Rating tertinggi</option><option value="bed">Tempat tidur terbanyak</option></select></label>
+        <div class="search-shell"><span>🔎</span><input id="dataSearch" placeholder="Cari nama fasilitas, kecamatan, layanan..."></div>
+        <button class="btn btn-yellow" id="downloadData" type="button">Ekspor CSV</button>
+      </div>
+      <div class="section-head"><h2 id="dataTitle">Semua data</h2><p id="dataSummary">Memuat data...</p></div>
+      <div class="card-grid" id="facilityCards"></div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><div><b>GeoHealth Purworejo</b><br><small>Katalog data fasilitas kesehatan.</small></div><div class="footer-links"><a href="map.html">Peta</a><a href="laporan.html">SDLC</a><a href="admin.html">Admin</a></div></div></footer>
+  <script src="assets/js/health-data.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/data-page.js"></script>
+  <script>document.querySelector('[data-page="data"]').classList.add('active')</script>
+</body>
+</html>

@@ -1,61 +1,65 @@
-# GeoHealth Purworejo — Fullstack WebGIS
+# GeoPlay Purworejo — Fullstack WebGIS Fasilitas Kesehatan
 
-Website ini adalah rancangan ulang WebGIS fasilitas kesehatan Kabupaten Purworejo. Sistem dibuat untuk memenuhi instruksi tugas: menggunakan SDLC, memiliki minimal dua jenis user, menyediakan login admin, dan memakai basis data PostgreSQL/PostGIS untuk menyimpan data spasial.
+Versi ini adalah upgrade tampilan dan fitur dari WebGIS sebelumnya. Tema warna dibuat dengan nuansa Toy Story: biru, kuning, merah, hijau, dan putih. Sistem tetap menggunakan struktur fullstack sederhana: frontend HTML/CSS/JavaScript, backend PHP API, dan database PostgreSQL/PostGIS.
 
-## Struktur Folder
+## Tujuan Sistem
+
+1. Menginventarisasi data fasilitas kesehatan berdasarkan nama, jenis, kecamatan, alamat, sumber data, dan koordinat.
+2. Memvisualisasikan sebaran fasilitas kesehatan pada peta interaktif.
+3. Membantu pengguna melakukan pencarian lokasi, filter data, pencarian fasilitas terdekat, rute, dan analisis radius layanan.
+4. Menyediakan dashboard admin untuk mengelola data spasial yang tersimpan dalam database.
+
+## Analisis yang Digunakan
+
+Analisis disesuaikan dengan tujuan sistem, yaitu:
+
+- Analisis jumlah fasilitas per jenis.
+- Analisis jumlah fasilitas per kecamatan.
+- Analisis kecamatan dengan data terbanyak dan paling sedikit.
+- Analisis buffer radius 1 km, 3 km, dan 5 km dari fasilitas terpilih.
+- Analisis fasilitas terdekat dari posisi pengguna.
+- Analisis rute menuju fasilitas.
+
+Catatan: analisis masih berbasis jumlah titik fasilitas. Sistem belum menggunakan data jumlah penduduk, daya tampung layanan, atau waktu tempuh riil karena data tersebut belum tersedia.
+
+## Struktur Halaman
+
+- `index.html` — landing page dengan tema Toy Story dan ringkasan tujuan sistem.
+- `map.html` — peta interaktif, filter, grafik, buffer radius, fasilitas terdekat, rute, dan ekspor CSV.
+- `data.html` — katalog data dan interpretasi sebaran.
+- `login.html` — halaman login admin.
+- `admin.html` — dashboard admin untuk tambah, edit, dan hapus data.
+- `laporan.html` — penjelasan SDLC, jenis user, database, dan analisis.
+
+## Database
+
+File SQL utama:
 
 ```text
-webgis_purworejo_fullstack/
-├── index.html              # Landing page
-├── map.html                # Peta interaktif
-├── data.html               # Katalog data atribut
-├── login.html              # Login admin/operator
-├── admin.html              # Dashboard kelola data
-├── laporan.html            # Ringkasan laporan sistem dan SDLC
-├── assets/
-│   ├── css/                # Style website
-│   ├── js/                 # Script frontend
-│   ├── img/                # Gambar pendukung
-│   └── geojson/            # Fallback data spasial
-├── api/                    # API PHP untuk PostgreSQL/PostGIS
-├── database/               # File SQL database
-└── docs/                   # Dokumentasi laporan
+/database/schema_postgresql.sql
 ```
 
-## Cara Menjalankan
+Import melalui pgAdmin Query Tool, bukan Restore.
 
-1. Import database dari `database/schema_postgresql.sql`.
-2. Sesuaikan koneksi database di `api/config.php`.
-3. Jalankan server lokal dari folder project:
+## Akun Admin Awal
+
+```text
+Email: admin@webgis.local
+Password: admin123
+```
+
+## Menjalankan Website
+
+Dari folder project, jalankan:
 
 ```bash
 php -S localhost:8000
 ```
 
-4. Buka `http://localhost:8000/index.html`.
-5. Login admin melalui `login.html`.
+Kemudian buka:
 
-Akun awal:
-- Admin: `admin@webgis.local` / `admin123`
-- Operator: `operator@webgis.local` / `operator123`
+```text
+http://localhost:8000/index.html
+```
 
-## Fitur
-
-- Peta interaktif berbasis Leaflet.
-- Layer batas Kabupaten Purworejo dan titik fasilitas kesehatan.
-- Basemap OpenStreetMap, Carto Light, dan Esri Imagery.
-- Filter jenis fasilitas dan kecamatan.
-- Pencarian nama, jenis, kecamatan, dan alamat.
-- Popup atribut dan tautan Google Maps.
-- Buffer radius 1 km.
-- Pencarian fasilitas terdekat dari lokasi pengguna.
-- Rute dari lokasi pengguna ke fasilitas terpilih.
-- Statistik dan grafik jenis fasilitas.
-- Ekspor data CSV.
-- Login admin/operator.
-- Tambah, edit, dan hapus data melalui dashboard admin.
-- PostgreSQL/PostGIS sebagai basis data spasial.
-
-## SDLC yang Digunakan
-
-Model yang digunakan adalah Prototype. Penjelasan tahapan tersedia pada `laporan.html` dan `docs/laporan_tahapan_sdlc.md`.
+Jika database/API belum aktif, website tetap dapat menampilkan data dari GeoJSON fallback. Namun, fitur simpan permanen di admin membutuhkan PostgreSQL/PostGIS dan koneksi API yang benar.

@@ -1,23 +1,26 @@
-# Cara Import Database PostgreSQL/PostGIS
+# Import Database GeoPlay Purworejo
 
-1. Buat database baru, misalnya `webgis_purworejo`.
-2. Pastikan ekstensi PostGIS tersedia di PostgreSQL.
-3. Jalankan file `schema_postgresql.sql` melalui pgAdmin Query Tool atau terminal:
+Gunakan pgAdmin Query Tool.
 
-```bash
-createdb webgis_purworejo
-psql -U postgres -d webgis_purworejo -f database/schema_postgresql.sql
+1. Buka pgAdmin.
+2. Buat database baru, contoh `webgis_purworejo`.
+3. Klik database tersebut.
+4. Pilih Tools > Query Tool.
+5. Buka file `schema_postgresql.sql`.
+6. Klik Execute/F5.
+7. Refresh bagian Schemas > public > Tables.
+
+File SQL ini sudah memakai `ST_Force2D` pada geometri batas wilayah sehingga tidak memunculkan error `Geometry has Z dimension but column does not`.
+
+Tabel utama:
+
+- `app_users`
+- `fasilitas_kesehatan`
+- `wilayah_administrasi`
+- `activity_logs`
+
+Akun awal:
+
+```text
+admin@webgis.local / admin123
 ```
-
-4. Sesuaikan koneksi database pada `api/config.php` atau gunakan environment variable:
-   - `PGHOST`
-   - `PGPORT`
-   - `PGDATABASE`
-   - `PGUSER`
-   - `PGPASSWORD`
-
-Akun login awal:
-- Admin: `admin@webgis.local` / `admin123`
-- Operator: `operator@webgis.local` / `operator123`
-
-Catatan: jika website dibuka tanpa server PHP atau database, frontend tetap memakai file GeoJSON statis pada `assets/geojson` sebagai fallback. Namun fitur simpan permanen hanya aktif jika API dan database berjalan.

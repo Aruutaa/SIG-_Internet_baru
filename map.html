@@ -2,9 +2,9 @@
 <html lang="id">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Peta Interaktif | GeoHealth Purworejo</title>
+  <title>Peta Interaktif | GeoPlay Purworejo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
@@ -14,27 +14,27 @@
 <body class="map-page">
   <div class="map-shell">
     <div class="map-top">
-      <div class="map-brand"><button class="map-btn" id="togglePanel">☰</button><a href="index.html" style="display:flex;align-items:center;gap:10px"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoHealth Purworejo<small>Peta Interaktif Fasilitas Kesehatan</small></span></a></div>
-      <div class="map-actions"><button class="map-btn hide-mobile" id="btnExportCsv">Ekspor CSV</button><button class="map-btn hide-mobile" id="btnPrint">Cetak Peta</button><a class="map-btn" href="data.html">Data</a><a class="map-btn primary" href="login.html">Admin</a></div>
+      <div class="map-brand"><button class="map-btn" id="togglePanel" type="button">☰</button><a href="index.html" style="display:flex;align-items:center;gap:10px"><img src="assets/img/Lambang_Kabupaten_Purworejo.png" alt="Logo"><span>GeoPlay Purworejo<small>Mission Map Fasilitas Kesehatan</small></span></a></div>
+      <div class="map-actions"><button class="map-btn hide-mobile" id="btnExportCsv" type="button">Ekspor CSV</button><button class="map-btn hide-mobile" id="btnPrint" type="button">Cetak Peta</button><a class="map-btn" href="data.html">Data</a><a class="map-btn primary" href="login.html">Admin</a></div>
     </div>
 
     <aside class="map-sidebar" id="mapSidebar">
-      <div class="panel"><h3>Ringkasan data</h3><div class="stat-grid"><div class="stat"><span class="mini-text">Total data</span><b id="statTotal">0</b></div><div class="stat"><span class="mini-text">Tampil</span><b id="statVisible">0</b></div><div class="stat"><span class="mini-text">Kecamatan</span><b id="statKec">0</b></div><div class="stat"><span class="mini-text">Sumber</span><b id="statSource">—</b></div></div></div>
-      <div class="panel"><h3>Pencarian</h3><input id="searchText" class="search-input" placeholder="Cari nama, jenis, kecamatan, alamat"><div style="height:10px"></div><select id="kecFilter" class="map-select"><option value="">Semua kecamatan</option></select></div>
-      <div class="panel"><h3>Layer fasilitas</h3><div id="typeFilters"></div><div style="height:12px"></div><button class="btn btn-soft btn-sm" id="resetFilter">Reset filter</button></div>
-      <div class="panel"><h3>Analisis cepat</h3><div class="draw-tools"><button id="zoomAll">Zoom semua</button><button id="locateMe">Lokasi saya</button><button id="nearestBtn">Terdekat</button><button id="clearAnalysis">Hapus analisis</button></div><p class="mini-text" style="margin-top:10px">Klik marker untuk menampilkan atribut, membuat rute, atau membuat buffer radius 1 km.</p></div>
+      <div class="panel"><h3>Mission summary</h3><div class="mission-grid"><div class="mission-card"><b id="statTotal">0</b><span>Total data</span></div><div class="mission-card"><b id="statVisible">0</b><span>Data tampil</span></div><div class="mission-card"><b id="statKec">0</b><span>Kecamatan</span></div><div class="mission-card"><b id="statSource">—</b><span>Sumber aktif</span></div></div></div>
+      <div class="panel"><h3>Pencarian & filter</h3><input id="searchText" class="search-input" placeholder="Cari nama, jenis, kecamatan, alamat"><div style="height:10px"></div><select id="kecFilter" class="map-select"><option value="">Semua kecamatan</option></select></div>
+      <div class="panel"><h3>Layer fasilitas</h3><div id="typeFilters"></div><div style="height:12px"></div><button class="btn btn-soft btn-sm" id="resetFilter" type="button">Reset filter</button></div>
+      <div class="panel"><h3>Analisis sesuai tujuan</h3><div class="draw-tools"><button id="zoomAll" type="button">Zoom semua</button><button id="locateMe" type="button">Lokasi saya</button><button id="nearestBtn" type="button">Terdekat</button><button id="clearAnalysis" type="button">Hapus analisis</button></div><div class="radius-inline"><label><span class="mini-text">Radius buffer</span><select id="radiusSelect" class="range-select"><option value="1000">1 km</option><option value="3000" selected>3 km</option><option value="5000">5 km</option></select></label><span class="range-value" id="radiusBadge">3 km</span></div><p class="mini-text" style="margin-top:10px">Klik marker untuk membaca atribut, membuat rute, atau membuat buffer sesuai radius yang dipilih.</p></div>
+      <div class="panel"><h3>Ringkasan otomatis</h3><div class="analysis-mini"><div class="analysis-row"><span>Jenis dominan</span><span id="dominantType">—</span></div><div class="analysis-row"><span>Kecamatan terbanyak</span><span id="topKec">—</span></div><div class="analysis-row"><span>Kecamatan minim data</span><span id="lowKec">—</span></div><div class="analysis-row"><span>Cakupan buffer</span><span id="bufferCount">—</span></div></div></div>
       <div class="panel"><h3>Grafik jenis fasilitas</h3><div class="chart-box"><canvas id="typeChart"></canvas></div></div>
       <div class="panel"><h3>Daftar fasilitas</h3><div class="facility-list" id="facilityList"></div></div>
     </aside>
     <div id="map"></div>
     <div class="map-note"><b>Status sistem</b><div class="mini-text" id="systemNote">Memuat data spasial...</div></div>
-    <div class="analysis-dock" id="analysisDock"><div><b>Panel analisis</b><p id="analysisText">Gunakan filter, klik marker, atau cari fasilitas terdekat untuk menampilkan hasil analisis.</p></div><button class="map-btn" id="hideDock">Sembunyikan</button></div>
+    <div class="analysis-dock" id="analysisDock"><div><b>Panel analisis</b><p id="analysisText">Gunakan filter, klik marker, atau cari fasilitas terdekat untuk menampilkan hasil analisis.</p></div><button class="map-btn" id="hideDock" type="button">Sembunyikan</button></div>
   </div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
   <script src="assets/js/common.js"></script><script src="assets/js/map.js"></script>
 </body>
 </html>
